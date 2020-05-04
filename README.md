@@ -6,7 +6,7 @@ Around the world, millions of people resonate with conservation and environmenta
 
 People want to contribute to these causes, but they lack actionable and contextual information for how *they* personally can make a difference. 
 
-This is a coordination problem, it limits our capacity to build a better future.
+This is a coordination problem, and it limits our capacity to build a better future.
 
 The scope of this problem is worldwide — particularly concentrated in the Global North, where lifestyle and consumption choices lead to deforestation and ecosystem loss down the supply chain. 
 
@@ -109,6 +109,18 @@ And if successful, this could be a high-impact tool to address the coordination 
 
 *  **[Video walkthrough](https://vimeo.com/414559011)**
 
+## **Constraints to Overcome**
+
+In particular, lowering the barrier to entry for organizing community/collective actions. 
+
+It's easy to make a change as an individual -- however, speaking frankly, the impact of doing so is minimal (especially if others can't see it and learn from it).
+
+Up until now, the process of organizing larger groups around a given cause has been more difficult. 
+
+According to [Momentum](https://www.momentumcommunity.org/), one of the most successful organizing methodologies, you sometimes need to *start* with a mass protest!  And that's just for getting people on board, let alone starting to take action. 
+
+If Home can streamline the process of community organizing for high-impact environmental actions, this will be a major breakthrough in enabling the types of transitions we need.
+
 ## **We Assume that...**
 
 1. We assume that lifestyle and consumption choices (particularly in Global North communities) have a significant effect on ecosystem loss and extinction rates
@@ -127,17 +139,40 @@ And if successful, this could be a high-impact tool to address the coordination 
 
 8. We assume that social transmission can occur through a digital public map.
 
-## **Constraints to Overcome**
+## **Who is the intended end user?  What is their role?**
 
-In particular, lowering the barrier to entry for organizing community/collective actions. 
+At the moment, there are two types of envisioned end users:
 
-It's easy to make a change as an individual -- however, speaking frankly, the impact of doing so is minimal (especially if others can't see it and learn from it).
+*  Active Citizens (Amateurs)
 
-Up until now, the process of organizing larger groups around a given cause has been more difficult. 
+*  Active Citizens (Subject Matter Experts)
 
-According to [Momentum](https://www.momentumcommunity.org/), one of the most successful organizing methodologies, you sometimes need to *start* with a mass protest!  And that's just for getting people on board, let alone starting to take action. 
+Both amateurs and subject matter experts have a shared role in exploring action opportunities and making proposals.
 
-If Home can streamline the process of community organizing for high-impact environmental actions, this will be a major breakthrough in enabling the types of transitions we need.
+However, subject matter experts have an additional role as a guide and a reviewer — they can share new action opportunities to the map, and they can evaluate proposals to add relevant details and determine feasibility.
+
+## **Who else is working on similar solutions?  Why is Home unique or better?**
+
+There are many apps and products focused on helping people make *individual* contributions towards conservation/environmental/sustainability efforts.
+
+There are also a few early-stage social networks looking to do the same.
+
+Finally, there are resources like Drawdown and the Energy Zones Mapping Tool, which can be impactful in the hands of organizations and high-up decisionmakers.
+
+Home is unique, and potentially better, because of its map-based interface tied to high-impact actions — as well as it’s citizen-centric foundation.
+
+For example …
+
+1. The Home map can give citizens greater awareness of our global situation (imagine applying a Global Forest Watch filter, or an Ocean Plastic filter, to get a real sense of the state of our world) — and consequently, that awareness can generate greater urgency for taking action.
+2. Map-based information can improve users' spatial/visual context, which can make the information presented inherently more actionable.
+3. Home is oriented towards higher-impact collective efforts, which can be led by everyday citizens, as opposed to siloed individual efforts or actions customed for organizations and top-down decisionmakers.
+4. Focused on collective efforts and providing visual context, Home has more potential for catalyzing social transmission, as compared to conventional social network feeds.
+
+As a final note, [The Energy Zones Mapping Tool](https://ezmt.anl.gov/) is a strong example of visualizing environment-related opportunities (through the application of various filters as datasets.)
+
+However, if you use the tool, you can see that it was clearly designed for high-level decisionmakers (specifically, [the Eastern Interconnected States Planning Council](https://ezmt.anl.gov/about_the_study)), and provides little information/context at the municipality or community level (where active citizens can take concrete efforts).
+
+It also lacks the crowdsourcing and networking elements envisioned in Home (e.g. viewing public proposals, connecting with others involved), which limits the tool's potential for social transition.
 
 ## **Current Work**
 
