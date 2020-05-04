@@ -20,9 +20,12 @@ A map of opportunities for high-impact environmental action.
 
 We have so many resources about our environment and the actions we need to take to protect it, e.g.
 
--[Project Drawdown](https://www.drawdown.org/solutions/table-of-solutions)
--[Energy Zones Mapping Tool](https://ezmt.anl.gov/)
--[Vizzzuality](https://www.vizzuality.com/project/)
+
+*  [Project Drawdown](https://www.drawdown.org/solutions/table-of-solutions)   
+
+*  [Energy Zones Mapping Tool](https://ezmt.anl.gov/)   
+
+*  [Vizzzuality](https://www.vizzuality.com/project/)   
 
 
 However, all these resources are siloed — and none give contextual, actionable insights for the everyday person.
@@ -63,7 +66,7 @@ You just need to see those opportunities.
 
 And Home is a map of them.
 
-****
+*UX/Product Notes*
 
 In terms of how it works, Home's user experience is still taking shape.  It is envisioned roughly like this:
 
@@ -85,7 +88,8 @@ This gives others a chance to review the proposal and provide feedback (more imp
 
 On the note of inspiring others, in the research paper [Cultural Evolution of Sustainable Behaviors: Pro-environmental Tipping Points in an Agent-Based Model](https://www.cell.com/one-earth/fulltext/S2590-3322(20)30003-8?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2590332220300038%3Fshowall%3Dtrue), this process of inspiration is described as follows:
 
-*Agents move in a landscape of affordances where they encounter either pro-environmental or non-environmental affordances and act upon them (i.e., behave pro- or non-environmentally).  Behaviors then lead to the development of habits, social transmission (learning or copying behaviors from others), and the modification of the landscape of affordances (i.e., cultural niche construction). In particular, we show how the composition of affordances in a socio-ecological system, such as infrastructures that afford pro-environmental behaviors, plays an essential role in shaping collective behavioral patterns. Our model illustrates how even linear increases in pro-environmental affordances can lead to the non-linear adoption of collective pro-environmental behavioral patterns.*
+
+> *Agents move in a landscape of affordances where they encounter either pro-environmental or non-environmental affordances and act upon them (i.e., behave pro- or non-environmentally).  Behaviors then lead to the development of habits, social transmission (learning or copying behaviors from others), and the modification of the landscape of affordances (i.e., cultural niche construction). In particular, we show how the composition of affordances in a socio-ecological system, such as infrastructures that afford pro-environmental behaviors, plays an essential role in shaping collective behavioral patterns. Our model illustrates how even linear increases in pro-environmental affordances can lead to the non-linear adoption of collective pro-environmental behavioral patterns.* 
 
 Essentially, when people can see your behavior (in real-life or in the digital world), they can learn and adopt that behavior.
 
@@ -147,4 +151,8 @@ If Home can streamline the process of community organizing for high-impact envir
 
 -Software development (specifically around Mapbox, rendering data sets, and data visualization)
 
--Knowledge/experience around community organizing and local sustainable development -Knowledge/experience around high-impact environmental actions -Knowledge/experience around linked data, privacy, and building Home as a system that enables users to own their data (and how that can work feasibly with the project’s aims)
+-Knowledge/experience around community organizing and local sustainable development 
+
+-Knowledge/experience around high-impact environmental actions 
+
+-Knowledge/experience around linked data, privacy, and building Home as a system that enables users to own their data (and how that can work feasibly with the project’s aims)
