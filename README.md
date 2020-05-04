@@ -104,7 +104,7 @@ And if successful, this could be a high-impact tool to address the coordination 
 ## **Initial Designs**
 
 
-*  [**Figma Interactive Prototype**](https://www.figma.com/proto/T5Y9R7TIV9o8locpAdQhAj/home-prototype?node-id=21%3A356&viewport=154%2C527%2C0.07721930742263794&scaling=min-zoom) * *Takes a bit of time to load.  When you see the world map, the prototype ready.*
+*  [**Figma Interactive Prototype**](https://www.figma.com/proto/T5Y9R7TIV9o8locpAdQhAj/home-prototype?node-id=21%3A356&viewport=154%2C527%2C0.07721930742263794&scaling=min-zoom) * *Takes a bit of time to load.  When you see the world map, it's finished loading.*
 
 
 *  **[Video walkthrough](https://vimeo.com/414559011)**
