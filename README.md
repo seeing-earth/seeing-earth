@@ -1,4 +1,6 @@
-**The Problem**
+### :earth_americas: **Home**
+
+## **The Problem**
 
 Around the world, millions of people resonate with conservation and environmental movements.
 
@@ -10,11 +12,11 @@ The scope of this problem is worldwide — particularly concentrated in the Glob
 
 As a simple example, if Global North communities transitioned to local plant-rich diets, that would alleviate demand for vacant land (e.g. for livestock and livestock feed), which would alleviate the need to raze forests, which would alleviate ecosystem destruction and species extinction. 
 
-This pserpective isn’t new. 
+This perspective isn’t new. 
 
 However, Home’s *approach* to the coordination problem is new.
 
-**The Solution**
+## **The Solution**
 
 A map of opportunities for high-impact environmental action. 
 
@@ -66,9 +68,9 @@ You just need to see those opportunities.
 
 And Home is a map of them.
 
-*UX/Product Notes*
+**UX/Product Notes**
 
-In terms of how it works, Home's user experience is still taking shape.  It is envisioned roughly like this:
+Home's user experience is still taking shape.  It is envisioned roughly like this:
 
 Home is your default browser page, so when you open your browser, this is the first thing you see:
 
@@ -99,7 +101,15 @@ In this way, you can also think of the map as social network of conservation and
 
 And if successful, this could be a high-impact tool to address the coordination problem described above -- and get many millions of communities actively involved in environmental and conservation movements.
 
-**We Assume that...**
+## **Initial Designs**
+
+
+*  [**Figma Interactive Prototype**](https://www.figma.com/proto/T5Y9R7TIV9o8locpAdQhAj/home-prototype?node-id=21%3A356&viewport=154%2C527%2C0.07721930742263794&scaling=min-zoom) * *Takes a bit of time to load.  When you see the world map, the prototype ready.*
+
+
+*  **[Video walkthrough](https://vimeo.com/414559011)**
+
+## **We Assume that...**
 
 1. We assume that lifestyle and consumption choices (particularly in Global North communities) have a significant effect on ecosystem loss and extinction rates
 
@@ -117,7 +127,7 @@ And if successful, this could be a high-impact tool to address the coordination 
 
 8. We assume that social transmission can occur through a digital public map.
 
-**Constraints to Overcome**
+## **Constraints to Overcome**
 
 In particular, lowering the barrier to entry for organizing community/collective actions. 
 
@@ -129,7 +139,7 @@ According to [Momentum](https://www.momentumcommunity.org/), one of the most suc
 
 If Home can streamline the process of community organizing for high-impact environmental actions, this will be a major breakthrough in enabling the types of transitions we need.
 
-**Current Work**
+## **Current Work**
 
 -Laying the right groundwork from the project, in terms of design considerations and user experience 
 
@@ -145,7 +155,7 @@ If Home can streamline the process of community organizing for high-impact envir
 
 -Writing the codebase for the alpha (can build on some open-source projects)
 
-**Current Needs**
+## **Current Needs**
 
 -Resources: Funds so I can commit to this project full-time
 
