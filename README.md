@@ -201,14 +201,3 @@ It also lacks the crowdsourcing and networking elements envisioned in Home (e.g.
 -Knowledge/experience around high-impact environmental actions 
 
 -Knowledge/experience around linked data, privacy, and building Home as a system that enables users to own their data (and how that can work feasibly with the project’s aims)
-
-## **Project Goals**
-
-* Create a tool + community that people enjoy and want to continue using  
-* Empower people to lead environmental/conservation/sustainable-focused transitions in their local communities  
-* Lower the friction involved in community organizing  
-* If successful in these first goals, help the tool + community scale to a wider audience  
-
-Eventually ...
-
-* Create a new home page for the Internet, where the news you encounter is about people working to make our shared home a better place, and you “search” for ways that you can impactfully contribute to causes that matter to you.
