@@ -192,7 +192,7 @@ It also lacks the crowdsourcing and networking elements envisioned in Home (e.g.
 
 ## **Current Needs**
 
--Funds
+-Funding
 
 -Software development (specifically around Mapbox, rendering data sets, and data visualization)
 
