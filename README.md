@@ -6,9 +6,9 @@ Around the world, millions of people recognize the challenges facing us.
 
 (To name a few.)
 
-And we're looking for ways to make a difference in these issues in our everyday lives.
+And we're all looking for ways to make a difference in these issues in our everyday lives.
 
-But aside from individual action (which, realistically, is limited) -- almost none of us have actionable and contextual information for how *we* personally can start making a real impact.
+But aside from individual action (which, realistically, is limited) -- almost none of us have actionable and contextual information for how *we* personally can start making a meaningful difference.
 
 This is a massive opportunity cost.  Every day we lack that information, is a day that we delay critical action.
 
@@ -25,16 +25,6 @@ To the contrary, have limitless resources about our environment and the actions 
 
 But all of these resources are siloed -- and none give contextual, actionalbe information for the everyday person.
 
-Looking at Project Drawdown, I can see that the #3 solution is adopting “plant-rich diets.” 
-
-And after reading that, I can decide to go vegetarian in my life.  But in the big picture, what difference does one more vegetarian really make?
-
-And what about the opportunity cost?  Instead of spending weeks researching vegetarianism, finding new foods and recipes and even stores, is there a better way I can apply my time and effort to making "plant-rich diets" a reality?
-
-Most likely, yes. (Instead of individually transitioning to a plant-rich diet behind the walls of your home, what if you organized to help your *community* transition to plant-rich diets?) 
-
-But looking at a resource like Project Drawdown, you never would see it.
-
 Whatever your passion and whatever your skills, you have countless opportunities to make a major impact in your very own neighborhood.
 
 You just need to see those opportunities.
@@ -49,7 +39,7 @@ On this map, you can explore impact areas you’re passionate about (e.g. Regene
 
 If you’re in Arizona, that could be proposing a solar farm in a vacant town lot.  If you’re in Kansas, that could be planning a community energy grid, to plug-in to nearby windmills.  If you’re in Canada or Australia, that could be organizing to block a proposed fossil fuel development, and protecting the local ecosystem that would be destroyed.
 
-These recommendations would be sourced from our many available environmental/conservation/sustainability resources (e.g. Drawdown, Energy Zones Mapping Tool, Global Forest Watch), and rendered in a way to make them accessible and actionable for everyday citizens.
+These recommendations would be sourced from our many available environmental/community/sustainability resources (e.g. Drawdown, Energy Zones Mapping Tool, Global Forest Watch), and rendered in a way to make them accessible and actionable for everyday citizens.
 
 And everyday, instead of “looking for something to do” on the Internet, you can see plenty of things you can do for your local community and the planet at large.
 
