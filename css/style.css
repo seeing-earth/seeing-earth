@@ -54,25 +54,37 @@ padding: 0px;
   top: 20px;
 }
 
+#actionMenu {
+  padding-right: 10px;
+}
+
 .mapboxgl-ctrl-geocoder {
   margin-top: 70px !important;
+}
+
+.geocoderPanel > .mapboxgl-ctrl-geocoder {
+  margin-top: 0px !important;
 }
 
 #categoryList {
   list-style: disclosure-closed;
 }
 
+.categoryItem.active {
+  list-style: disclosure-open;
+}
+
 .categoryItem.active > .categoryHeader {
-  background-color: #ccc;
-  width: max-content;
+  background-color: rgba(59, 184, 211, 0.22);
 }
 
 .categoryHeader {
-  max-height: 55px;
+  max-height: 50px;
+  padding: 10px;
 }
 
 .categoryHeader > *  {
-  display: inline-block;
+  display: inline;
 }
 
 .actionIcon {
