@@ -16,9 +16,9 @@ This is a massive opportunity cost.  Every day we lack that information, is a da
 
 An interactive map PPGIS, where users can:
 
--Search for suggested actions for their community
--Start actions in their community
--Join ongoing actions in their community
+-Search for suggested actions for their community    
+-Start actions in their community    
+-Join ongoing actions in their community    
 
 The MVP of the "action" described above is an email thread.  When starting an action, the creator adds several neighbors' email addresses.  Upon publishing, the creator and invited neighbors receive a joint email, guiding them on ways to start taking action -- specifically, *in ways that can scale across the community* -- and they can use the email thread to start discussing their plans and working together.
 Importantly, these participants can also easily invite other neighbors to join in the action, simply by adding that neighbor's email address to a reply.
@@ -36,10 +36,11 @@ There are countless websites, applications, and resources encouraging people to 
 
 However, these resources are all focused on *individuals.* And acting as individuals, our impact is realistically limited.
 
-In the words of John Javna, author of “50 Simple Things You Can Do to Save the Earth”:
+In the [words of John Javna](https://grist.org/climate/how-people-came-to-believe-that-individual-choices-could-save-the-earth/), author of “50 Simple Things You Can Do to Save the Earth”:
 
-“In the end, if anything works, it’s not spreading yourself as thin as possible and doing the easiest possible things.  The path to success, is joining a community of people trying to change something for the better — and if the system is set up effectively, then doing the right thing becomes simple.” (https://grist.org/climate/how-people-came-to-believe-that-individual-choices-could-save-the-earth/)
-On the other hand, acting as communities can bring about tremendous change.  According to Harvard researcher Erica Chenoweth, “movements that engage 3.5% of the population have never failed to bring about change.” (https://www.bbc.com/future/article/20190513-it-only-takes-35-of-people-to-change-the-world)
+> In the end, if anything works, it’s not spreading yourself as thin as possible and doing the easiest possible things.  The path to success, is joining a community of people trying to change something for the better — and if the system is set up effectively, then doing the right thing becomes simple.    
+
+On the other hand, acting as communities can bring about tremendous change.  [According to Harvard researcher Erica Chenoweth](https://www.bbc.com/future/article/20190513-it-only-takes-35-of-people-to-change-the-world), “movements that engage 3.5% of the population have never failed to bring about change.”
 
 Home is an effort to help people start impactful actions *as a community.*
 
@@ -47,7 +48,7 @@ Not by sharing actions on social media and hoping for “viral growth”, as mos
 
 But by spreading through densely connected grassroots networks — which, when it comes to spreading complex changes, are the most robust and efficient kinds of networks.
 
-This approach is inspired by Damon Centrola’s research on How Behavior Spreads (https://www.youtube.com/watch?v=o0fDcUJMzkI) and Roope Karonen’s research on social tipping points (https://www.cell.com/one-earth/fulltext/S2590-3322(20)30003-8?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2590332220300038%3Fshowall%3Dtrue#articleInformation)
+This approach is inspired by Damon Centrola’s research on [How Behavior Spreads](https://www.youtube.com/watch?v=o0fDcUJMzkI) and Roope Karonen’s research on [social tipping points](https://www.cell.com/one-earth/fulltext/S2590-3322(20)30003-8?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2590332220300038%3Fshowall%3Dtrue#articleInformation).
 
 ## **Initial Designs**
 
