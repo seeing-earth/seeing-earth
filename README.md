@@ -40,7 +40,9 @@ In the [words of John Javna](https://grist.org/climate/how-people-came-to-believ
 
 > In the end, if anything works, it’s not spreading yourself as thin as possible and doing the easiest possible things.  The path to success, is joining a community of people trying to change something for the better — and if the system is set up effectively, then doing the right thing becomes simple.    
 
-On the other hand, acting as communities can bring about tremendous change.  According to [Harvard researcher Erica Chenoweth](https://www.bbc.com/future/article/20190513-it-only-takes-35-of-people-to-change-the-world), ***movements that engage 3.5% of the population have never failed to bring about change.***
+On the other hand, acting as communities can bring about tremendous change.  According to [Harvard researcher Erica Chenoweth](https://www.bbc.com/future/article/20190513-it-only-takes-35-of-people-to-change-the-world),
+
+> Movements that engage 3.5% of the population have never failed to bring about change.
 
 Home is an effort to help people start impactful actions *as a community.*
 
