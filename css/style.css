@@ -52,6 +52,7 @@ padding: 0px;
   border-radius: 10px;
   right: 10px;
   top: 20px;
+  overflow: scroll;
 }
 
 #actionMenu {
@@ -95,5 +96,26 @@ padding: 0px;
 .categoryPanel {
   padding: 0 18px;
   display: none;
-  overflow: hidden;
+  overflow: scroll;
+  /* height: 200px; */
+}
+
+.action {
+  margin-bottom: 10px;
+  list-style: disclosure-closed;
+}
+
+.actionContent {
+  padding: 0 18px;
+  display: none;
+  overflow: scroll;
+  /* height: 200px; */
+}
+
+.action.active {
+  list-style: disclosure-open;
+}
+
+.action.active > .actionTitle {
+  background-color: rgba(59, 184, 211, 0.22);
 }
