@@ -12,61 +12,53 @@ But aside from individual action (which, realistically, is limited) -- almost no
 
 This is a massive opportunity cost.  Every day we lack that information, is a day that we delay critical action.
 
-However -- it isn't that we're unsure of the changes and transitions we need to begin.
+**Description of Project**
 
-To the contrary, have limitless resources about our environment and the actions needed to protect it:
+An interactive map PPGIS, where users can:
 
+-Search for suggested actions for their community    
+-Start actions in their community    
+-Join ongoing actions in their community    
 
-*  [Project Drawdown](https://www.drawdown.org/solutions/table-of-solutions)   
+The MVP of the "action" described above is an email thread.  When starting an action, the creator adds several neighbors' email addresses.  Upon publishing, the creator and invited neighbors receive a joint email, guiding them on ways to start taking action -- specifically, *in ways that can scale across the community* -- and they can use the email thread to start discussing their plans and working together.
+Importantly, these participants can also easily invite other neighbors to join in the action, simply by adding that neighbor's email address to a reply.
 
-*  [Energy Zones Mapping Tool](https://ezmt.anl.gov/)   
+Simple, easy, frictionless.
 
-*  [Vizzuality](https://www.vizzuality.com/project/)   
+Likewise, if you want to join an existing action in your community, you simply find it on the map, click "join this action", and enter your email address.
+You will be added to the community email thread for that action, where you can join other neighbors and the discussion/work they've begun.
 
-But all of these resources are siloed -- and none give contextual, actionalbe information for the everyday person.
+Simple, easy, frictionless.
 
-Whatever your passion and whatever your skills, you have countless opportunities to make a major impact in your very own neighborhood.
+**Why does Home matter?**
 
-You just need to see those opportunities.
+There are countless websites, applications, and resources encouraging people to make important changes in their lives -- from sustainable living to online privacy.
 
-And Home is a map of them.
+However, these resources are all focused on *individuals.* And acting as individuals, our impact is realistically limited.
 
-**UX/Product Notes**
+In the [words of John Javna](https://grist.org/climate/how-people-came-to-believe-that-individual-choices-could-save-the-earth/), author of “50 Simple Things You Can Do to Save the Earth”:
 
-Home is envisioned as a world map, marked by environmental initiatives and community projects, across every country in the world.
+> In the end, if anything works, it’s not spreading yourself as thin as possible and doing the easiest possible things.  The path to success, is joining a community of people trying to change something for the better — and if the system is set up effectively, then doing the right thing becomes simple.    
 
-On this map, you can explore impact areas you’re passionate about (e.g. Regenerative Agriculture, Zero-Waste, Energy, Community-Building) — and view specific, high-impact ways you contribute to those causes in your local context.
+On the other hand, acting as communities can bring about tremendous change.  According to [Harvard researcher Erica Chenoweth](https://www.bbc.com/future/article/20190513-it-only-takes-35-of-people-to-change-the-world):
 
-If you’re in Arizona, that could be proposing a solar farm in a vacant town lot.  If you’re in Kansas, that could be planning a community energy grid, to plug-in to nearby windmills.  If you’re in Canada or Australia, that could be organizing to block a proposed fossil fuel development, and protecting the local ecosystem that would be destroyed.
+> **Movements that engage 3.5% of the population have never failed to bring about change.**
 
-These recommendations would be sourced from our many available environmental/community/sustainability resources (e.g. Drawdown, Energy Zones Mapping Tool, Global Forest Watch), and rendered in a way to make them accessible and actionable for everyday citizens.
+Home is an effort to help people start impactful actions *as a community.*
 
-And everyday, instead of “looking for something to do” on the Internet, you can see plenty of things you can do for your local community and the planet at large.
+Not by sharing actions on social media and hoping for “viral growth”, as most status quo applications encourage.
 
-When you find an opportunity you’re interested in, you can quickly turn it into an initial proposal and publish that proposal to the map.
+But by spreading through densely connected grassroots networks — which, when it comes to spreading complex changes, are the most robust and efficient kinds of networks.
 
-This gives others a chance to review the proposal and provide feedback (more important for higher-cost efforts), and by making the proposal public, you can inspire others in your community by showing them what’s happening nearby and how they can also get involved.
-
-On the note of inspiring others, in the research paper [Cultural Evolution of Sustainable Behaviors: Pro-environmental Tipping Points in an Agent-Based Model](https://www.cell.com/one-earth/fulltext/S2590-3322(20)30003-8?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2590332220300038%3Fshowall%3Dtrue), this process of inspiration is described as follows:
-
-
-> *Agents move in a landscape of affordances where they encounter either pro-environmental or non-environmental affordances and act upon them (i.e., behave pro- or non-environmentally).  Behaviors then lead to the development of habits, social transmission (learning or copying behaviors from others), and the modification of the landscape of affordances (i.e., cultural niche construction). In particular, we show how the composition of affordances in a socio-ecological system, such as infrastructures that afford pro-environmental behaviors, plays an essential role in shaping collective behavioral patterns. Our model illustrates how even linear increases in pro-environmental affordances can lead to the non-linear adoption of collective pro-environmental behavioral patterns.* 
-
-Essentially, when people can see your behavior (in real-life or in the digital world), they can learn and adopt that behavior.
-
-In the case of Home, that behavior is making impactful contributions to environmental and community initatives.
-
-In this way, you can also think of the map as social network of change-makers.  (Complete with an embedded chat app, like Discord, as a communication layer and news feed for the community.)
-
-If successful, a tool like this could empower millions of communities to start taking an active role in building their future.
+This approach is inspired by Damon Centrola’s research on [How Behavior Spreads](https://www.youtube.com/watch?v=o0fDcUJMzkI) and Roope Karonen’s research on [social tipping points](https://www.cell.com/one-earth/fulltext/S2590-3322(20)30003-8?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2590332220300038%3Fshowall%3Dtrue#articleInformation).
 
 ## **Initial Designs**
 
 
-*  [**Figma Interactive Prototype**](https://www.figma.com/proto/T5Y9R7TIV9o8locpAdQhAj/home-prototype?node-id=21%3A356&viewport=154%2C527%2C0.07721930742263794&scaling=min-zoom) * *Takes a bit of time to load.  When you see the world map, it's finished loading.*
+*  [**Figma Interactive Prototype**](https://www.figma.com/proto/fUrfiDkDfNBeGALu3VKMiF/home-exp?node-id=137%3A0&viewport=5606%2C5088%2C0.917864203453064&scaling=scale-down) * *Takes a bit of time to load.*
 
 
-*  **[Video walkthrough](https://vimeo.com/414559011)**
+*  **[Video walkthrough](https://vimeo.com/424284999)**
 
 ## **Constraints to Overcome**
 
@@ -147,7 +139,7 @@ It also lacks the crowdsourcing and networking elements envisioned in Home (e.g.
 
 -Funding
 
--Software development (specifically around Mapbox, rendering data sets, and data visualization)
+-Software development (specifically around interactive maps, rendering data sets, and data visualization)
 
 -Knowledge/experience around community organizing and local sustainable development 
 
