@@ -67,55 +67,11 @@ padding: 0px;
   margin-top: 0px !important;
 }
 
-#categoryList {
-  list-style: disclosure-closed;
-}
-
-.categoryItem.active {
-  list-style: disclosure-open;
-}
-
-.categoryItem.active > .categoryHeader {
+details[open] > summary {
   background-color: rgba(59, 184, 211, 0.22);
 }
 
-.categoryHeader {
-  max-height: 50px;
-  padding: 10px;
-}
-
-.categoryHeader > *  {
-  display: inline;
-}
-
-.actionIcon {
+.itemIcon {
   margin-right: 2px;
   width: 15px;
-}
-
-.categoryPanel {
-  padding: 0 18px;
-  display: none;
-  overflow: scroll;
-  /* height: 200px; */
-}
-
-.action {
-  margin-bottom: 10px;
-  list-style: disclosure-closed;
-}
-
-.actionContent {
-  padding: 0 18px;
-  display: none;
-  overflow: scroll;
-  /* height: 200px; */
-}
-
-.action.active {
-  list-style: disclosure-open;
-}
-
-.action.active > .actionTitle {
-  background-color: rgba(59, 184, 211, 0.22);
 }

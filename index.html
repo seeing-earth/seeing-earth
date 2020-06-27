@@ -33,76 +33,38 @@
      <img id="logo" src="../assets/home-logo.png"><h1 id="header">home</h1>
    </div>
 
-  <div id="uiContainer">
-    <div id="actionMenu">
-    <ul id="categoryList">
+  <nav id="uiContainer">
+    <section id="act">
+    <ul id="actionList">
       <!-- To have one item expanded to start, set categoryItem to active and category panel to display: block; -->
-      <li class="categoryItem">
-        <div class="categoryHeader">
-          <img class="categoryIcon" src="/assets/flame.png" />
-          <h4 class="categoryTitle">Top Priorities</h4>
-        </div>
-        <div class="categoryPanel" style="display: none;">
-          <!-- <p class="searchPrompt">Enter your city or zip code to get started.</p> -->
-          <!-- The div below is where you can add a geocoder search bar inside the panel. -->
-          <!-- <div id="geocoder2" class="geocoderPanel"></div> -->
-          <div class="subCategories">
-            <ul style="margin-left: -35px;">
-            <li class="action">
-              <p class="actionTitle">Spread the vote for June 23rd NY Primaries</p>
-              <div class="actionContent">
-              <p class="actionHeader">
-                Spread the word via email, text, or FB
-              </p>
-            </div>
-            </li>
-            <li class="action">
-              <p class="actionTitle">Spread the vote for June 23rd KY Primaries</p>
-              <div class="actionContent">
-              <p class="actionHeader">
-                Spread the word via email, text, or FB
-              </p>
-            </div>
-            </li>
-            <li class="action">
-              <p class="actionTitle">Spread the vote for July 7th DE Primaries</p>
-              <div class="actionContent">
-              <p class="actionHeader">
-                Spread the word via email, text, or FB
-              </p>
-            </div>
-            </li>
-            <li class="action">
-              <p class="actionTitle">Spread the vote for July 7th NJ Primaries</p>
-              <div class="actionContent">
-              <p class="actionHeader">
-                Spread the word via email, text, or FB
-              </p>
-            </div>
-            </li>
-            <li class="action">
-              <p class="actionTitle">Spread the vote for July 11th LA Primaries</p>
-              <div class="actionContent">
-              <p class="actionHeader">
-                Spread the word via email, text, or FB
-              </p>
-            </div>
-            </li>
-            <li class="action">
-            <p class="actionTitle">Spread the vote for July 12th PR Primaries</p>
-              <div class="actionContent">
-              <p class="actionHeader">
-                Spread the word via email, text, or FB
-              </p>
-            </div>
-            </li>
-          </ul>
-          </div>
-        </div>
-      </li>
+      <details class="item top-level">
+        <summary class="itemHeader">
+          <img class="itemIcon" src="/assets/flame.png" />
+          <strong>Top Priorities</strong>
+        </summary>
+
+        <ul>
+        <details>
+          <summary>Restorative Justice System</summary>
+          <p>Spread the word via email, text, or FB</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+
+        <details>
+          <summary>Reduce Meat Consumption</summary>
+          <p>Spread the word via email, text, or FB</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+      </ul>
+      </details>
     </ul>
-  </div>
-  </div>
+  </section>
+</nav>
 
   <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoibGV0b3VycG93ZXJzY29tYmluZSIsImEiOiJjazFmN3N0eTUwb3JwM2JwYWk4ZXB1enNtIn0._UjpOqZIeiWqhscosubipw';
@@ -190,52 +152,6 @@ mapboxgl: mapboxgl
 
 document.getElementById('geocoder2').appendChild(geocoder2);
 </script> -->
-
-<script>
-var acc = document.getElementsByClassName("categoryHeader");
-var i;
-
-for (i = 0; i < acc.length; i++) {
-  acc[i].addEventListener("click", function() {
-    /* Toggle between adding and removing the "active" class,
-    to highlight the button that controls the panel */
-    this.parentNode.classList.toggle("active");
-
-    console.log(this);
-
-    /* Toggle between hiding and showing the active panel */
-    var panel = this.parentNode.querySelector('.categoryPanel');
-    if (panel.style.display === "block") {
-      panel.style.display = "none";
-    } else {
-      panel.style.display = "block";
-    }
-  });
-}
-</script>
-
-<script>
-var acc = document.getElementsByClassName("actionTitle");
-var i;
-
-for (i = 0; i < acc.length; i++) {
-  acc[i].addEventListener("click", function() {
-    /* Toggle between adding and removing the "active" class,
-    to highlight the button that controls the panel */
-    this.parentNode.classList.toggle("active");
-
-    console.log(this);
-
-    /* Toggle between hiding and showing the active panel */
-    var panel = this.parentNode.querySelector('.actionContent');
-    if (panel.style.display === "block") {
-      panel.style.display = "none";
-    } else {
-      panel.style.display = "block";
-    }
-  });
-}
-</script>
 
 <!-- <script>
 var map = document.getElementById("map");
