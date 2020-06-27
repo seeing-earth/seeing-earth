@@ -43,7 +43,7 @@ padding: 0px;
   padding: 0px 3px;
 }
 
-#uiContainer {
+nav#uiContainer {
   position: absolute;
   width: 360px;
   height: 360px;
@@ -53,11 +53,12 @@ padding: 0px;
   right: 10px;
   top: 20px;
   overflow: scroll;
-}
-
-#actionMenu {
   padding-right: 10px;
 }
+
+/* #act {
+  padding-right: 10px;
+} */
 
 .mapboxgl-ctrl-geocoder {
   margin-top: 70px !important;
@@ -67,8 +68,25 @@ padding: 0px;
   margin-top: 0px !important;
 }
 
+ul {
+  padding-left: 20px;
+}
+
+details {
+  padding-top: 10px;
+}
+
 details[open] > summary {
   background-color: rgba(59, 184, 211, 0.22);
+  /* font-weight: initial; */
+}
+
+summary {
+  font-weight: bold;
+}
+
+details[open] > h1, h2, h3, h4, h5, h6, p {
+  padding-left: 10px;
 }
 
 .itemIcon {
