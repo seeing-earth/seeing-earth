@@ -35,10 +35,10 @@
 
   <nav id="controller">
     <section id="menu">
-        <a class="tab active" href="#act" id="act">Act</a>
-        <a class="tab" href="#chat" id="chat">Chat</a>
+        <a class="tab active" href="#act" id="actTab">Act</a>
+        <a class="tab" href="#chat" id="chatTab">Chat</a>
     </section>
-    <section id="act">
+    <section id="actSection">
 
     <ul class="top-level">
 
@@ -221,6 +221,10 @@
 
   </section>
 
+  <section id="chatSection" style="display: none;">
+    <iframe src="https://titanembeds.com/embed/726604157607477340?theme=DiscordDark" height="600" width="360" frameborder="0"></iframe>
+  </section>
+
 </nav>
 
   <script>
@@ -307,7 +311,11 @@ for(j = 0; j < tabs.length; j++) {
 function clickTab (e) {
 
   var tabID = e.currentTarget.id
+  var chatSection = document.getElementById('chatSection');
+  var actSection = document.getElementById('actSection');
   // var pageID = tabID.replace('t','p')
+
+  console.log(tabID);
 
   for (i = 0; i < tabs.length; i++) {
     // deactivate all tabs
@@ -316,6 +324,19 @@ function clickTab (e) {
 
   // activate current tab
   e.currentTarget.classList.add('active')
+
+  if (tabID === "chatTab") {
+
+    console.log('found chat')
+
+    chatSection.style.display = "block";
+    actSection.style.display = "none";
+  }
+
+  else {
+    actSection.style.display = "block";
+    chatSection.style.display = "none";
+  }
 
   // show current page
   // var currentPage = document.querySelector('#'+pageID)
