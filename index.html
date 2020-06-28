@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset='utf-8' />
-  <title>Local search app</title>
+  <title>Home - A Better World</title>
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
   <script src='https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js'></script>
   <link href='https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css' rel='stylesheet' />
@@ -33,8 +33,13 @@
      <img id="logo" src="../assets/home-logo.png"><h1 id="header">home</h1>
    </div>
 
-  <nav id="uiContainer">
+  <nav id="controller">
+    <section id="menu">
+        <a class="tab active" href="#act" id="act">Act</a>
+        <a class="tab" href="#chat" id="chat">Chat</a>
+    </section>
     <section id="act">
+      
     <ul class="top-level">
 
       <details>
@@ -70,13 +75,13 @@
         var map = new mapboxgl.Map({
           container: 'map', // Container ID
           style: 'mapbox://styles/mapbox/streets-v11', // Map style to use
-          center: [-36.98, 38.38], // Starting position [lng, lat]
-          zoom: 2.6, // Starting zoom level
-        });
+          center: [-77.0365, 38.8940], // Starting position [lng, lat]
+          zoom: 13, // Starting zoom level
 
-        // var marker = new mapboxgl.Marker() // initialize a new marker
-        // .setLngLat([-122.25948, 37.87221]) // Marker [lng, lat] coordinates
-        // .addTo(map); // Add the marker to the map
+          // coodinates and zoom for global map:
+          // center: [-36.98, 38.38], // Starting position [lng, lat]
+          // zoom: 2.6, // Starting zoom level
+        });
 
         var geocoder = new MapboxGeocoder({ // Initialize the geocoder
         accessToken: mapboxgl.accessToken, // Set the access token
@@ -132,31 +137,40 @@
 
        });
       });
-
-      // Code to add a geocoder search inside the right panel accordion UI
-      // var geocoder2 = new MapboxGeocoder({
-      // accessToken: mapboxgl.accessToken,
-      // mapboxgl: mapboxgl
-      // });
-      //
-      // document.getElementById('geocoder2').appendChild(geocoder2.onAdd(map));
 </script>
 
-<!--  Script to add a geocoder search inside the right panel accordion UI -->
-<!-- <script>
-var geocoder2 = new MapboxGeocoder({
-accessToken: mapboxgl.accessToken,
-mapboxgl: mapboxgl
-});
+<script>
 
-document.getElementById('geocoder2').appendChild(geocoder2);
-</script> -->
+// link to js: https://jsbin.com/defidih/edit?js,console,output
 
-<!-- <script>
-var map = document.getElementById("map");
-var logoContainer = document.getElementById("logoContainer");
-map.appendChild(logoContainer);
-</script> -->
+var tabs = document.getElementsByClassName('tab');
+
+for(j = 0; j < tabs.length; j++) {
+  // attach event listener to all tabs
+  tabs[j].addEventListener('click', clickTab)
+}
+
+// event listener function
+function clickTab (e) {
+
+  var tabID = e.currentTarget.id
+  // var pageID = tabID.replace('t','p')
+
+  for (i = 0; i < tabs.length; i++) {
+    // deactivate all tabs
+    tabs[i].classList.remove('active')
+  }
+
+  // activate current tab
+  e.currentTarget.classList.add('active')
+
+  // show current page
+  // var currentPage = document.querySelector('#'+pageID)
+  // currentPage.classList.add('active')
+
+}
+
+</script>
 
 </body>
 </html>
