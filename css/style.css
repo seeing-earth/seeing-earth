@@ -72,17 +72,23 @@ ul {
   padding-left: 20px;
 }
 
+ul.2nd-level {
+  padding-left: 30px;
+}
+
 details {
-  padding-top: 10px;
+  padding-top: 15px;
 }
 
 details[open] > summary {
   background-color: rgba(59, 184, 211, 0.22);
-  /* font-weight: initial; */
+  font-weight: bold;
+  margin-bottom: 10px;
+  border-bottom: solid black 1px;
 }
 
 summary {
-  font-weight: bold;
+  font-weight: initial;
 }
 
 details[open] > h1, h2, h3, h4, h5, h6, p {
