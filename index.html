@@ -35,9 +35,9 @@
 
   <nav id="controller">
     <section id="menu">
-        <!-- <a class="tab" href="#learn" id="learnTab">Learn</a> -->
         <a class="tab active" href="#act" id="actTab">Act</a>
         <a class="tab" href="#chat" id="chatTab">Chat</a>
+        <a class="tab" href="#board" id="devTab">Dev</a>
     </section>
     <section id="actSection">
 
@@ -300,6 +300,19 @@
 
   <section id="chatSection" style="display: none;">
     <iframe src="https://titanembeds.com/embed/726604157607477340?theme=DiscordDark" height="600" width="360" frameborder="0"></iframe>
+  </section>
+
+  <section id="devSection" style="display: none;">
+    <h4>Project Board + Priorities</h4>
+    <ul style="padding-left: 5px;">
+      <details><summary>1. Implement method for loading map data</summary></details>
+      <details><summary>2. Implement method for styling map data</summary></details>
+      <details><summary>3. Research enviornmental priorities (e.g. Methane emissions, Siberian Permafrost, Continental Glacier Melt) and root causes.  <br>Enter data based on initial schema,  assigning weights/causing according to data.</summary></details>
+      <details><summary>Data Sources:</summary>
+        <!-- <a href=""></a> -->
+      </details>
+
+    </ul>
   </section>
 
 </nav>
@@ -761,6 +774,7 @@ function clickTab (e) {
   var tabID = e.currentTarget.id
   var chatSection = document.getElementById('chatSection');
   var actSection = document.getElementById('actSection');
+  var devSection = document.getElementById('devSection');
   // var pageID = tabID.replace('t','p')
 
   console.log(tabID);
@@ -779,11 +793,19 @@ function clickTab (e) {
 
     chatSection.style.display = "block";
     actSection.style.display = "none";
+    devSection.style.display = "none";
   }
 
-  else {
+  else if (tabID === "actTab") {
     actSection.style.display = "block";
     chatSection.style.display = "none";
+    devSection.style.display = "none";
+  }
+
+  else if (tabID === "devTab") {
+    devSection.style.display = "block";
+    chatSection.style.display = "none";
+    actSection.style.display = "none";
   }
 
   // show current page
