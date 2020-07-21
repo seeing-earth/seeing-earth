@@ -6,22 +6,8 @@
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
   <script src='https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js'></script>
   <link href='https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css' rel='stylesheet' />
-  <link href='/css/style.css' rel='stylesheet' type="text/css"/>
+  <link href='style.css' rel='stylesheet' type="text/css"/>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300" rel="stylesheet" type="text/css">
-
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-    }
-
-    #map {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 100%;
-    }
-  </style>
   <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.min.js'></script>
 <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.css' type='text/css' />
 </head>
@@ -35,266 +21,266 @@
 
   <nav id="controller">
     <section id="menu">
+        <a class="tab" href="#learn" id="learnTab">Learn</a>
         <a class="tab active" href="#act" id="actTab">Act</a>
         <a class="tab" href="#chat" id="chatTab">Chat</a>
-        <a class="tab" href="#board" id="devTab">Dev</a>
     </section>
     <section id="actSection">
 
-      <ul class="top-level">
+    <ul class="top-level">
 
+      <details>
+        <summary>
+          <img class="itemIcon" src="/assets/flame.png" /> Top Priorities
+        </summary>
+
+        <ul class="2nd-level">
         <details>
-          <summary>
-            <img class="itemIcon" src="/assets/flame.png" /> Top Priorities
-          </summary>
-
-          <ul class="2nd-level">
-          <details>
-            <summary>Amazon Rainforest</summary>
-            <p><strong>Spread the word via email, text, or FB</strong></p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-
-          <details>
-            <summary>Methane Emissions</summary>
-            <p>Spread the word via email, text, or FB</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-        </ul>
+          <summary>Restorative Justice System</summary>
+          <p><strong>Spread the word via email, text, or FB</strong></p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
         </details>
 
         <details>
-          <summary>
-            <img class="itemIcon" src="/assets/team.png" /> GHG Reductions
-          </summary>
-
-          <p><em>Under Construction</em></p>
-
-          <!-- <ul class="2nd-level">
-          <details>
-            <summary>Restorative Justice System</summary>
-            <p><strong>Spread the word via email, text, or FB</strong></p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-
-          <details>
-            <summary>Reduce Meat Consumption</summary>
-            <p>Spread the word via email, text, or FB</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-        </ul> -->
-
+          <summary>Reduce Meat Consumption</summary>
+          <p>Spread the word via email, text, or FB</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
         </details>
-
-        <details>
-          <summary>
-            <img class="itemIcon" src="/assets/agriculture.png" /> Conservation
-          </summary>
-
-          <p><em>Under Construction</em></p>
-
-          <p>1. <p>Display <a href="https://www.arcgis.com/home/item.html?id=60d4c74d0dc04e8384ddb0d1320ebe21">NatureServe's endangered species map</a>, paired with:</p>
-          <p>a. <a href="https://monarchwatch.org/waystations/index.html#registry">Monarch Waystation Registry</a></p>
-          <p>b. <a href="https://www.audubon.org/about/audubon-near-you">Audubon Near You</a></p>
-          <p>a. <a href="http://millionpollinatorgardens.org/">Monarch Waystation Registry</a></p>
-
-          <p>So you can map the highest-priority problem areas, as well as the nearest conservation experts in those areas, and enable people to reach those experts and increase conservation</p>
-          <p>A global version would be good as well.  Perhaps Map of Life?  And/or pairing Crowther Labs with local reforestation experts.</p>
-
-          <!-- <ul class="2nd-level">
-          <details>
-            <summary>Restorative Justice System</summary>
-            <p><strong>Spread the word via email, text, or FB</strong></p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-
-          <details>
-            <summary>Reduce Meat Consumption</summary>
-            <p>Spread the word via email, text, or FB</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-        </ul> -->
-        </details>
-
-        <details>
-          <summary>
-            <img class="itemIcon" src="/assets/agriculture.png" /> Food
-          </summary>
-
-          <p><em>Under Construction</em></p>
-
-          <!-- <ul class="2nd-level">
-          <details>
-            <summary>Restorative Justice System</summary>
-            <p><strong>Spread the word via email, text, or FB</strong></p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-
-          <details>
-            <summary>Reduce Meat Consumption</summary>
-            <p>Spread the word via email, text, or FB</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-        </ul> -->
-        </details>
-
-        <details>
-          <summary>
-            <img class="itemIcon" src="/assets/business.png" /> Voting
-          </summary>
-
-          <p><em>Under Construction</em></p>
-
-          <p>Render a map of voter registration / voter participation rates, so people can find where to focus get out the vote efforts (could be overlapped by highest-priority districts and states?)</p>
-          <!-- <ul class="2nd-level">
-          <details>
-            <summary>Restorative Justice System</summary>
-            <p><strong>Spread the word via email, text, or FB</strong></p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-
-          <details>
-            <summary>Reduce Meat Consumption</summary>
-            <p>Spread the word via email, text, or FB</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-        </ul> -->
-        </details>
-
-        <details>
-          <summary>
-            <img class="itemIcon" src="/assets/business.png" /> Transportation
-          </summary>
-
-          <p><em>Under Construction</em></p>
-
-          <!-- <ul class="2nd-level">
-          <details>
-            <summary>Restorative Justice System</summary>
-            <p><strong>Spread the word via email, text, or FB</strong></p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-
-          <details>
-            <summary>Reduce Meat Consumption</summary>
-            <p>Spread the word via email, text, or FB</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-        </ul> -->
-        </details>
-
-        <details>
-          <summary>
-            <img class="itemIcon" src="/assets/buildings.png" /> Housing
-          </summary>
-
-          <p><em>Under Construction</em></p>
-
-          <!-- <ul class="2nd-level">
-          <details>
-            <summary>Restorative Justice System</summary>
-            <p><strong>Spread the word via email, text, or FB</strong></p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-
-          <details>
-            <summary>Reduce Meat Consumption</summary>
-            <p>Spread the word via email, text, or FB</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-        </ul> -->
-        </details>
-
-        <details>
-          <summary>
-            <img class="itemIcon" src="/assets/curve.png" /> Goods
-          </summary>
-
-          <p><em>Under Construction</em></p>
-
-          <!-- <ul class="2nd-level">
-          <details>
-            <summary>Restorative Justice System</summary>
-            <p><strong>Spread the word via email, text, or FB</strong></p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-
-          <details>
-            <summary>Reduce Meat Consumption</summary>
-            <p>Spread the word via email, text, or FB</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-        </ul> -->
-        </details>
-
-        <details>
-          <summary>
-            <img class="itemIcon" src="/assets/buildings.png" /> Energy
-          </summary>
-
-          <p><em>Under Construction</em></p>
-
-          <!-- <ul class="2nd-level">
-          <details>
-            <summary>Restorative Justice System</summary>
-            <p><strong>Spread the word via email, text, or FB</strong></p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-
-          <details>
-            <summary>Reduce Meat Consumption</summary>
-            <p>Spread the word via email, text, or FB</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-            <p>Intro Text This is how we have to fix this etc.</p>
-          </details>
-        </ul> -->
-        </details>
-
       </ul>
+      </details>
+
+      <details>
+        <summary>
+          <img class="itemIcon" src="/assets/team.png" /> GHG Reductions
+        </summary>
+
+        <p><em>Under Construction</em></p>
+
+        <!-- <ul class="2nd-level">
+        <details>
+          <summary>Restorative Justice System</summary>
+          <p><strong>Spread the word via email, text, or FB</strong></p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+
+        <details>
+          <summary>Reduce Meat Consumption</summary>
+          <p>Spread the word via email, text, or FB</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+      </ul> -->
+
+      </details>
+
+      <details>
+        <summary>
+          <img class="itemIcon" src="/assets/agriculture.png" /> Conservation
+        </summary>
+
+        <p><em>Under Construction</em></p>
+
+        <p>1. <p>Display <a href="https://www.arcgis.com/home/item.html?id=60d4c74d0dc04e8384ddb0d1320ebe21">NatureServe's endangered species map</a>, paired with:</p>
+        <p>a. <a href="https://monarchwatch.org/waystations/index.html#registry">Monarch Waystation Registry</a></p>
+        <p>b. <a href="https://www.audubon.org/about/audubon-near-you">Audubon Near You</a></p>
+        <p>a. <a href="http://millionpollinatorgardens.org/">Monarch Waystation Registry</a></p>
+
+        <p>So you can map the highest-priority problem areas, as well as the nearest conservation experts in those areas, and enable people to reach those experts and increase conservation</p>
+        <p>A global version would be good as well.  Perhaps Map of Life?  And/or pairing Crowther Labs with local reforestation experts.</p>
+
+        <!-- <ul class="2nd-level">
+        <details>
+          <summary>Restorative Justice System</summary>
+          <p><strong>Spread the word via email, text, or FB</strong></p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+
+        <details>
+          <summary>Reduce Meat Consumption</summary>
+          <p>Spread the word via email, text, or FB</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+      </ul> -->
+      </details>
+
+      <details>
+        <summary>
+          <img class="itemIcon" src="/assets/agriculture.png" /> Food
+        </summary>
+
+        <p><em>Under Construction</em></p>
+
+        <!-- <ul class="2nd-level">
+        <details>
+          <summary>Restorative Justice System</summary>
+          <p><strong>Spread the word via email, text, or FB</strong></p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+
+        <details>
+          <summary>Reduce Meat Consumption</summary>
+          <p>Spread the word via email, text, or FB</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+      </ul> -->
+      </details>
+
+      <details>
+        <summary>
+          <img class="itemIcon" src="/assets/business.png" /> Voting
+        </summary>
+
+        <p><em>Under Construction</em></p>
+
+        <p>Render a map of voter registration / voter participation rates, so people can find where to focus get out the vote efforts (could be overlapped by highest-priority districts and states?)</p>
+        <!-- <ul class="2nd-level">
+        <details>
+          <summary>Restorative Justice System</summary>
+          <p><strong>Spread the word via email, text, or FB</strong></p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+
+        <details>
+          <summary>Reduce Meat Consumption</summary>
+          <p>Spread the word via email, text, or FB</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+      </ul> -->
+      </details>
+
+      <details>
+        <summary>
+          <img class="itemIcon" src="/assets/business.png" /> Transportation
+        </summary>
+
+        <p><em>Under Construction</em></p>
+
+        <!-- <ul class="2nd-level">
+        <details>
+          <summary>Restorative Justice System</summary>
+          <p><strong>Spread the word via email, text, or FB</strong></p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+
+        <details>
+          <summary>Reduce Meat Consumption</summary>
+          <p>Spread the word via email, text, or FB</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+      </ul> -->
+      </details>
+
+      <details>
+        <summary>
+          <img class="itemIcon" src="/assets/buildings.png" /> Housing
+        </summary>
+
+        <p><em>Under Construction</em></p>
+
+        <!-- <ul class="2nd-level">
+        <details>
+          <summary>Restorative Justice System</summary>
+          <p><strong>Spread the word via email, text, or FB</strong></p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+
+        <details>
+          <summary>Reduce Meat Consumption</summary>
+          <p>Spread the word via email, text, or FB</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+      </ul> -->
+      </details>
+
+      <details>
+        <summary>
+          <img class="itemIcon" src="/assets/curve.png" /> Goods
+        </summary>
+
+        <p><em>Under Construction</em></p>
+
+        <!-- <ul class="2nd-level">
+        <details>
+          <summary>Restorative Justice System</summary>
+          <p><strong>Spread the word via email, text, or FB</strong></p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+
+        <details>
+          <summary>Reduce Meat Consumption</summary>
+          <p>Spread the word via email, text, or FB</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+      </ul> -->
+      </details>
+
+      <details>
+        <summary>
+          <img class="itemIcon" src="/assets/buildings.png" /> Energy
+        </summary>
+
+        <p><em>Under Construction</em></p>
+
+        <!-- <ul class="2nd-level">
+        <details>
+          <summary>Restorative Justice System</summary>
+          <p><strong>Spread the word via email, text, or FB</strong></p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+
+        <details>
+          <summary>Reduce Meat Consumption</summary>
+          <p>Spread the word via email, text, or FB</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+          <p>Intro Text This is how we have to fix this etc.</p>
+        </details>
+      </ul> -->
+      </details>
+
+    </ul>
 
   </section>
 
@@ -302,461 +288,8 @@
     <iframe src="https://titanembeds.com/embed/726604157607477340?theme=DiscordDark" height="600" width="360" frameborder="0"></iframe>
   </section>
 
-  <section id="devSection" style="display: none;">
-    <h4>Project Board + Priorities</h4>
-    <ul style="padding-left: 5px;">
-      <details><summary>1. Implement method for loading map data</summary></details>
-      <details><summary>2. Implement method for styling map data</summary></details>
-      <details><summary>3. Research enviornmental priorities (e.g. Methane emissions, Siberian Permafrost, Continental Glacier Melt) and root causes.  <br>Enter data based on initial schema,  assigning weights/causing according to data.</summary></details>
-      <details><summary>Data Sources:</summary>
-        <!-- <a href=""></a> -->
-      </details>
-
-    </ul>
-  </section>
-
 </nav>
-
-  <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoibGV0b3VycG93ZXJzY29tYmluZSIsImEiOiJjazFmN3N0eTUwb3JwM2JwYWk4ZXB1enNtIn0._UjpOqZIeiWqhscosubipw';
-        var map = new mapboxgl.Map({
-          container: 'map', // Container ID
-          style: 'mapbox://styles/mapbox/streets-v11', // Map style to use
-          center: [-77.0365, 38.8940], // Starting position [lng, lat]
-          zoom: 2, // Starting zoom level
-
-          // coodinates and zoom for global map:
-          // center: [-36.98, 38.38], // Starting position [lng, lat]
-          // zoom: 2.6, // Starting zoom level
-        });
-
-        var geocoder = new MapboxGeocoder({ // Initialize the geocoder
-        accessToken: mapboxgl.accessToken, // Set the access token
-        placeholder: 'Search anywhere',
-        //bbox: [-122.30937, 37.84214, -122.23715, 37.89838], // Boundary for Berkeley
-        proximity: {
-          longitude: -122.25948,
-          latitude: 37.87221
-        }, // Coordinates of UC Berkeley
-        mapboxgl: mapboxgl, // Set the mapbox-gl instance
-        marker: false, // Do not use the default marker style
-      });
-
-      // Add the geocoder to the map
-      map.addControl(geocoder, 'top-left');
-
-      // add a source layer and default styling for a single point
-      map.on('load', function() {
-        map.addSource('dataset', {
-        'type:': 'geojson',
-        'data': {
-          "type": "FeatureCollection",
-          "features": [
-            {
-              "type": "Feature",
-              "properties": {
-                "stroke": "#ff0000",
-                "stroke-width": 2,
-                "stroke-opacity": 1,
-                "fill": "#00cfeb",
-                "fill-opacity": 0.5,
-                "name": "Amazon Rainforest",
-                "id": "amazonRainforest",
-                "graph_type": "footprint",
-                "headline": "The Amazon is one of the world's greatest carbon sinks and one of the world's most important homes of biodiversity.  In the late 20th Century, the Amazon would sequester about 2 billion tons of CO2 every year (almost half the USA's annual carbon footprint).  Due to deforestation, the Amazon now only sequesters approximately 1.1 billion tons of CO2 per year, and approximately 20% of the rainforest is actively emitting carbon.  The Amazon is currently 18% deforested, and research has indicated at 25% deforestation, it may reach a tipping point where the rainforest no longer becomes a carbon sink -- and starts becoming a savannah.  More than half of Amazon's deforestation is comes from the production of beef, soy, wood, and palm oil, which is driven by Brazil's current national policy and president Jair Bolsanaro, and likewise driven by consumption in countries like China, the United States, Indian, Germany, and Spain.  One potential strategy for improvement is eliminating the most destructive production taking place in the Amazon, and replacing it with sustainable logging practices, which can allow the rainforest to continue supporting local livelihoods while remaining an important resource of logging materials for the rest of the world. ",
-                "entity": "natural",
-                "CO2_impact": "-1,100,000,000",
-                "CO2_trend": "red"
-              },
-              "geometry": {
-                "type": "Polygon",
-                "coordinates": [
-                  [
-                    [
-                      -64.599609375,
-                      -15.28418511407642
-                    ],
-                    [
-                      -44.560546875,
-                      -2.6357885741666065
-                    ],
-                    [
-                      -45.615234375,
-                      -1.9332268264771106
-                    ],
-                    [
-                      -47.98828124999999,
-                      -0.4394488164139641
-                    ],
-                    [
-                      -50.361328125,
-                      -0.7031073524364783
-                    ],
-                    [
-                      -52.294921875,
-                      -1.669685500986571
-                    ],
-                    [
-                      -50.009765625,
-                      1.142502403706165
-                    ],
-                    [
-                      -50.88867187499999,
-                      2.8113711933311403
-                    ],
-                    [
-                      -52.55859375,
-                      5.00339434502215
-                    ],
-                    [
-                      -54.404296875,
-                      6.140554782450308
-                    ],
-                    [
-                      -56.25,
-                      5.528510525692801
-                    ],
-                    [
-                      -58.35937499999999,
-                      6.926426847059551
-                    ],
-                    [
-                      -60.1171875,
-                      8.320212289522944
-                    ],
-                    [
-                      -61.69921875,
-                      9.535748998133627
-                    ],
-                    [
-                      -63.6328125,
-                      10.31491928581316
-                    ],
-                    [
-                      -67.763671875,
-                      10.228437266155943
-                    ],
-                    [
-                      -71.630859375,
-                      5.878332109674327
-                    ],
-                    [
-                      -79.189453125,
-                      -2.0210651187669897
-                    ],
-                    [
-                      -78.662109375,
-                      -4.214943141390639
-                    ],
-                    [
-                      -73.828125,
-                      -13.068776734357694
-                    ],
-                    [
-                      -64.599609375,
-                      -15.28418511407642
-                    ]
-                  ]
-                ]
-              }
-            },
-            {
-              "type": "Feature",
-              "properties": {
-                "stroke": "#f50000",
-                "stroke-width": 4,
-                "stroke-opacity": 1,
-                "name": "Brazil exports to China",
-                "id": "brazil_china_exports",
-                "parentIDs": "[\"amazonRainforest\"]",
-                "headline": "Beef and soy production are two of the main drivers of Amazon deforestation.  China (and Hong Kong) purchases 55% of all beef from the Amazon, and China purchases 82% of all soybeans from the Amazon.",
-                "graph_type": "cause",
-                "products": "[{\"name\":\"beef\",\"amount_USD\":\"2,700,000,000\",\"pct_total\":\"0.55\",\"weight\":\"0.25\"},{\"name\":\"soy\",\"amount_USD\":\"28,306,000,000\",\"pct_total\":\"0.82\",\"weight\":\"0.3\"}]",
-                "weight": 0.55
-              },
-              "geometry": {
-                "type": "LineString",
-                "coordinates": [
-                  [
-                    -44.6484375,
-                    -2.460181181020993
-                  ],
-                  [
-                    116.3671875,
-                    40.713955826286046
-                  ]
-                ]
-              }
-            },
-            {
-              "type": "Feature",
-              "properties": {
-                "stroke": "#ff0000",
-                "stroke-width": 3,
-                "stroke-opacity": 1,
-                "name": "Brazil National Policy",
-                "id": "brazil_national_policy",
-                "parentIDs": "[\"amazonRainforest\"]",
-                "headline": "President Jair Bolsanaro has made it a national policy to extract value from the Amazon at the expense of the rainforest's future.",
-                "graph_type": "cause",
-                "weight": 0.25
-              },
-              "geometry": {
-                "type": "LineString",
-                "coordinates": [
-                  [
-                    -57.22046875,
-                    -11.000607953624762
-                  ],
-                  [
-                    -46.6259765625,
-                    -23.50355189742412
-                  ]
-                ]
-              }
-            },
-            {
-              "type": "Feature",
-              "properties": {
-                "stroke": "#ff0000",
-                "stroke-width": 2,
-                "stroke-opacity": 0.7,
-                "name": "Brazil exports to United States",
-                "id": "brazil_USA_exports",
-                "parentIDs": "[\"amazonRainforest\"]",
-                "headline": "Logging is one of the main drivers of Amazon deforestation, and the United States purchases about 1/3rd of all of Brazil's wood products.",
-                "graph_type": "cause",
-                "products": "[{\"name\":\"wood\",\"amount_USD\":\"1,270,000,000\",\"pct_total\":\"0.33\",\"weight\":\"0.25\"}]",
-                "weight": 0.15
-              },
-              "geometry": {
-                "type": "LineString",
-                "coordinates": [
-                  [
-                    -65.390625,
-                    10.833305983642491
-                  ],
-                  [
-                    -77.0361328125,
-                    38.92522904714054
-                  ]
-                ]
-              }
-            },
-            {
-              "type": "Feature",
-              "properties": {
-                "stroke": "#ff0000",
-                "stroke-width": 0.5,
-                "stroke-opacity": 1,
-                "name": "Brazil exports to Italy",
-                "id": "brazil_italy_exports",
-                "parentIDs": "[\"amazonRainforest\"]",
-                "headline": "Beef is one of the main drivers of Amazon deforestation, and Italy purchases about ~3.5% of all of Brazil's beef products.",
-                "graph_type": "cause",
-                "products": "[{\"name\":\"beef\",\"amount_USD\":\"160,000,000\",\"pct_total\":\"0.0349\",\"weight\":\"0.25\"}]",
-                "weight": 0.02
-              },
-              "geometry": {
-                "type": "LineString",
-                "coordinates": [
-                  [
-                    -51.15234375,
-                    4.039617826768437
-                  ],
-                  [
-                    12.54638671875,
-                    42.00032514831621
-                  ]
-                ]
-              }
-            },
-            {
-              "type": "Feature",
-              "properties": {
-                "stroke": "#ff0000",
-                "stroke-width": 0.5,
-                "stroke-opacity": 1,
-                "name": "Brazil exports to Spain",
-                "id": "brazil_spain_exports",
-                "parentIDs": "[\"amazonRainforest\"]",
-                "headline": "Soy is one of the main drivers of Amazon deforestation, and Spain purchases ~2% of all of Brazil's soy products.",
-                "graph_type": "cause",
-                "products": "[{\"name\":\"soy\",\"amount_USD\":\"742,000,000\",\"pct_total\":\"0.02\",\"weight\":\"0.25\"}]",
-                "weight": 0.015
-              },
-              "geometry": {
-                "type": "LineString",
-                "coordinates": [
-                  [
-                    -52.20703125,
-                    5.441022303717974
-                  ],
-                  [
-                    -3.69140625,
-                    40.54720023441049
-                  ]
-                ]
-              }
-            },
-            {
-              "type": "Feature",
-              "properties": {
-                "stroke": "#ff0000",
-                "stroke-width": 0.5,
-                "stroke-opacity": 1,
-                "name": "Brazil exports to Colombia",
-                "id": "brazil_colombia_exports",
-                "parentIDs": "[\"amazonRainforest\"]",
-                "graph_type": "cause",
-                "headline": "Palm oil is one of the main drivers of Amazon deforestation, and Colombia purchases ~44% of all Brazil's palm oil products.",
-                "products": "[{\"name\":\"palm_oil\",\"amount_USD\":\"10,000,000\",\"pct_total\":\"0.42\",\"weight\":\"0.25\"}]",
-                "weight": 0.045
-              },
-              "geometry": {
-                "type": "LineString",
-                "coordinates": [
-                  [
-                    -73.47656249999999,
-                    4.171115454867424
-                  ],
-                  [
-                    -73.95996093749999,
-                    4.609278084409835
-                  ]
-                ]
-              }
-            },
-            {
-              "type": "Feature",
-              "properties": {
-                "stroke": "#ff0000",
-                "stroke-width": 0.5,
-                "stroke-opacity": 1,
-                "name": "Brazil exports to India",
-                "id": "brazil_india_exports",
-                "parentIDs": "[\"amazonRainfores\"]",
-                "headline": "Soy is one of the main drivers of Amazon deforestation, and India purchases ~52% of all of Brazil's soybean oil.",
-                "graph_type": "cause",
-                "products": "[{\"name\":\"soybean_oil\",\"amount_USD\":\"535,000,000\",\"pct_total\":\"0.52\",\"weight\":\"0.25\"}]",
-                "weight": 0.04
-              },
-              "geometry": {
-                "type": "LineString",
-                "coordinates": [
-                  [
-                    -44.12109374999999,
-                    -3.162455530237848
-                  ],
-                  [
-                    77.255859375,
-                    28.613459424004414
-                  ]
-                ]
-              }
-            },
-            {
-              "type": "Feature",
-              "properties": {
-                "stroke": "#ff0000",
-                "stroke-width": 0.5,
-                "stroke-opacity": 1,
-                "name": "Brazil exports to Germany",
-                "id": "brazil_germany_exports",
-                "parentIDs": "[\"amazonRainforest\"]",
-                "headline": "Palm oil is one of the main drivers of Amazon deforestation, and Germany purchases ~30.1% of all Brazil's palm oil products.",
-                "graph_type": "cause",
-                "products": "[{\"name\":\"palm_oil\",\"amount_USD\":\"6,800,000\",\"pct_total\":\"0.301\",\"weight\":\"0.25\"}]",
-                "weight": 0.04
-              },
-              "geometry": {
-                "type": "LineString",
-                "coordinates": [
-                  [
-                    -51.861328125,
-                    4.496727241761671
-                  ],
-                  [
-                    11.46435546875,
-                    48.16608541901253
-                  ]
-                ]
-              }
-            }
-          ]
-        }
-        });
-
-        map.addLayer({
-        'id': 'footprint',
-        'type': 'fill',
-        'source': 'dataset',
-        'filter': [
-          '==',
-          'graph_type',
-          'footprint'
-        ],
-        'paint': {
-        'fill-color': '#888888',
-        'fill-opacity': 0.4
-        }
-        });
-
-        map.addLayer({
-        'id': 'cause',
-        'type': 'line',
-        'source': 'datset',
-        'filter': [
-          '==',
-          'graph_type',
-          'cause'
-        ],
-        'paint': {
-        'line-color': '#888',
-        'line-width': 8
-        }
-        });
-
-        // add a source layer and default styling for a single point
-         // map.addSource('single-point', {
-         //   type: 'geojson',
-         //   data: {
-         //     type: 'FeatureCollection',
-         //     features: []
-         //   }
-         // });
-         //
-         // map.addLayer({
-         //   id: 'point',
-         //   source: 'single-point',
-         //   type: 'circle',
-         //   paint: {
-         //     'circle-radius': 10,
-         //     'circle-color': '#448ee4'
-         //   }
-         // });
-
-       // Listen for the `result` event from the Geocoder
-       // `result` event is triggered when a user makes a selection
-       //  Add a marker at the result's coordinates
-       geocoder.on('result', function(e) {
-         map.getSource('single-point').setData(e.result.geometry);
-
-         var acc = document.getElementsByClassName("categoryPanel");
-         var searchPrompts = document.getElementsByClassName("searchPrompt");
-         var subCategories = document.getElementsByClassName("subCategories");
-         var i;
-
-         for (i = 0; i < acc.length; i++) {
-           acc[i].classList.add('searched');
-           searchPrompts[i].setAttribute('style', 'display: none;');
-           subCategories[i].setAttribute('style', 'display: block;');
-         }
-
-       });
-      });
-</script>
-
+<script src='map.js'></script>
 <script>
 
 // link to js: https://jsbin.com/defidih/edit?js,console,output
@@ -774,7 +307,6 @@ function clickTab (e) {
   var tabID = e.currentTarget.id
   var chatSection = document.getElementById('chatSection');
   var actSection = document.getElementById('actSection');
-  var devSection = document.getElementById('devSection');
   // var pageID = tabID.replace('t','p')
 
   console.log(tabID);
@@ -793,19 +325,11 @@ function clickTab (e) {
 
     chatSection.style.display = "block";
     actSection.style.display = "none";
-    devSection.style.display = "none";
   }
 
-  else if (tabID === "actTab") {
+  else {
     actSection.style.display = "block";
     chatSection.style.display = "none";
-    devSection.style.display = "none";
-  }
-
-  else if (tabID === "devTab") {
-    devSection.style.display = "block";
-    chatSection.style.display = "none";
-    actSection.style.display = "none";
   }
 
   // show current page
