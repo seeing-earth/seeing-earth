@@ -1,8 +1,10 @@
-// #########################################
-// ## Immediate To-Do:                    ##
-// ##   + node clicks activate all nodes  ##
-// ##   + node hovers activate all edges  ##
-// #########################################
+// #################################################
+// ## Immediate To-Do:                            ##
+// ##   + node clicks activate all nodes          ##
+// ##   + node hovers activate all edges          ##
+// ##   + optimize geojson -> 6-decimal precision ##
+// ##   + switch from tilelayer source to geojson ##
+// #################################################
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYmdvYmxpcnNjaCIsImEiOiJjaXpuazEyZWowMzlkMzJvN3M3cThzN2ZkIn0.B0gMS_CvyKc_NHGmWejVqw';
 var map = new mapboxgl.Map({
@@ -100,9 +102,12 @@ map.on('load', function() {
     closeOnClick: false
   });
 
+  // nodes.features.forEach(function(node) {
+  //   console.log(node);
+  // });
+
   // On node hover: darken node and show its edges
   map.on("mousemove", "node_layer", function(e) {
-    console.log(e.features[0]);
     // Change cursor to "select"
     map.getCanvas().style.cursor = 'pointer';
 
@@ -116,6 +121,7 @@ map.on('load', function() {
           },
           { active: false }
         );
+        // hide edges
         map.setLayoutProperty("edge_layer", "visibility", "none")
       }
 
