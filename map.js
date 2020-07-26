@@ -1,3 +1,9 @@
+// #########################################
+// ## Immediate To-Do:                    ##
+// ##   + node clicks activate all nodes  ##
+// ##   + node hovers activate all edges  ##
+// #########################################
+
 mapboxgl.accessToken = 'pk.eyJ1IjoiYmdvYmxpcnNjaCIsImEiOiJjaXpuazEyZWowMzlkMzJvN3M3cThzN2ZkIn0.B0gMS_CvyKc_NHGmWejVqw';
 var map = new mapboxgl.Map({
   container: 'map', // Container ID
@@ -20,7 +26,7 @@ var node_layer = {
   "id": "node_layer",
   "type": "fill",
   "source": "nodes",
-  "source-layer": "node_amazon",
+  "source-layer": "home_nodes",
   "paint": {
     "fill-color": "green",
     "fill-opacity": [
@@ -38,7 +44,7 @@ var node_outlines = {
   "id": "node_outlines",
   "type": "line",
   "source": "nodes",
-  "source-layer": "node_amazon",
+  "source-layer": "home_nodes",
   "paint": {
     "line-color": ["get", "CO2_trend"],
     "line-width": ["get", "stroke-width"],
@@ -56,7 +62,7 @@ var edge_layer = {
   "id": "edge_layer",
   "type": "line",
   "source": "edges",
-  "source-layer": "edges_amazon",
+  "source-layer": "home_edges",
   "layout": {
     "visibility": "none"
   },
@@ -76,11 +82,11 @@ map.on('load', function() {
   // Source mapbox tile layers
   map.addSource("nodes", {
     type: "vector",
-    url: "mapbox://bgoblirsch.ckcuso6mc6f2e27qlycv13pje-6ua39"
+    url: "mapbox://bgoblirsch.ckd2nk5qo1qdx26mh5dkjsvu9-2xtiv"
   });
   map.addSource("edges", {
     type: "vector",
-    url: "mapbox://bgoblirsch.ckcusoi1t1ooi2an5glnrtn7x-7hzml"
+    url: "mapbox://bgoblirsch.ckd2nkhxu1mbu2dmheqdzke6e-0rgxk"
   })
 
   // Create the layer objects
@@ -88,7 +94,7 @@ map.on('load', function() {
   map.addLayer(node_outlines);
   map.addLayer(edge_layer);
 
-  // Mapbox popup object
+  // Create Mapbox popup object
   var popup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false
@@ -96,29 +102,31 @@ map.on('load', function() {
 
   // On node hover: darken node and show its edges
   map.on("mousemove", "node_layer", function(e) {
+    console.log(e.features[0]);
     // Change cursor to "select"
     map.getCanvas().style.cursor = 'pointer';
 
     if (e.features.length > 0) {
-      // if something is already hovered: make it not active and hide edges
+      // if something is already hovered: make it not active and hide its children
       if (hoveredNodeId) {
         map.setFeatureState({
             source: "nodes",
             id: hoveredNodeId,
-            sourceLayer: "node_amazon"
+            sourceLayer: "home_nodes"
           },
           { active: false }
         );
         map.setLayoutProperty("edge_layer", "visibility", "none")
       }
 
+      // mapbox's unique feature Id, not our custom property
       hoveredNodeId = e.features[0].id;
 
       // set node to active (darken)
       map.setFeatureState({
           source: "nodes",
           id: hoveredNodeId,
-          sourceLayer: "node_amazon"
+          sourceLayer: "home_nodes"
         },
         { active: true }
       );
@@ -154,7 +162,7 @@ map.on('load', function() {
       map.setFeatureState({
           source: "nodes",
           id: hoveredNodeId,
-          sourceLayer: "node_amazon"
+          sourceLayer: "home_nodes"
         },
         { active: false }
       );
@@ -194,7 +202,7 @@ map.on('load', function() {
         map.setFeatureState({
           source: "nodes",
           id: activeNodeId,
-          sourceLayer: "node_amazon"
+          sourceLayer: "home_nodes"
           },
           { active: false }
         );
@@ -208,7 +216,7 @@ map.on('load', function() {
         map.setFeatureState({
             source: "nodes",
             id: hoveredNodeId,
-            sourceLayer: "node_amazon"
+            sourceLayer: "home_nodes"
           },
           { active: true }
         );
