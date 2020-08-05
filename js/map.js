@@ -1,16 +1,16 @@
-// #############################################################
-// ## To-Do:                                                  ##
-// ##   + on CV hover & click, increase other CV's opacity    ##
-// ##   + while PA is active, disable hover on other PAs      ##
-// ##   + optimize geojson -> 6-decimal precision             ##
-// ##   + fix zoomTo function -> pass a parameter             ##
-// #############################################################
+////////////////////////////////////////////////////////////////////////
+// To-Do:
+//  + on Cause Vector hover & click, increase other CV's opacity
+//  + optimize geojson -> 6-decimal precision
+//  + fix zoomTo function -> pass a parameter
+//  + get popup to avoid covering its feature's children
+////////////////////////////////////////////////////////////////////////
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYmdvYmxpcnNjaCIsImEiOiJjaXpuazEyZWowMzlkMzJvN3M3cThzN2ZkIn0.B0gMS_CvyKc_NHGmWejVqw';
 var map = new mapboxgl.Map({
   container: 'map', // Container ID
   style: 'mapbox://styles/mapbox/streets-v11', // Map style to use
-  zoom: 1.9, // Starting zoom level
+  zoom: 1.6, // Starting zoom level
 });
 
 // Geocoder object
@@ -25,6 +25,7 @@ var geocoder = new MapboxGeocoder({ // Initialize the geocoder
 map.addControl(geocoder, 'top-left');
 
 // global variables for tracking the current hovered/selected edges and nodes
+// !!! I believe the _Num variables can be dropped if you force the non-_Num ones to use the string ID (instead of the mapbox generated one) !!!
 let hoveredPAid = null;
 let hoveredPAidNum = null;
 let hoveredCVid = null;
@@ -42,14 +43,15 @@ let popup = new mapboxgl.Popup({
   closeOnClick: false
 });
 
-
 map.on('load', function() {
+  // Load the geojson data; currently local in this js file.
+  // move to external site for better performance
   loadGeojsonSources();
 
   // Create a layer and generate listener objects for each Priority Area
   createPriorityAreaLayers();
 
-  // Create a layer and generate listener objects for each Caues Vector
+  // Create a layer and generate listener objects for each Cause Vector
   createCauseVectorLayers();
 
   // Listen for the `result` event from the Geocoder
@@ -77,6 +79,9 @@ map.on('load', function() {
 // ## function and make it work for any node                              ##
 // #########################################################################
 function zoomTo() {
+  // wishing for getExtent:
+  // let extent = getExtent(feature)
+  // then zoomTo(feature) logic;
   let edge_extent = map.getSource("priorityAreaSource").bounds;
   let node_extent = map.getSource("causeVectorSource").bounds;
   let bounds = new mapboxgl.LngLatBounds();
@@ -98,6 +103,12 @@ function hideChildren(parentId) {
     if (feature.properties.parentId == parentId) {
       map.setLayoutProperty(feature.properties.id, "visibility", "none");
     }
+  });
+}
+
+function hideAllChildren() {
+  causeVectors.features.forEach(function(feature) {
+    map.setLayoutProperty(feature.properties.id, "visibility", "none");
   });
 }
 
@@ -143,7 +154,7 @@ function createCauseVectorLayers() {
 
     map.on("mouseleave", layerId, function(e) {
       popup.remove();
-      if (!selectedCVid) {
+      if (!selectedCVid || selectedCVid != layerId) {
         hideChildren(layerId);
       }
     });
@@ -193,40 +204,43 @@ function createPriorityAreaLayers() {
     });
 
     map.on("mousemove", layerId, function(e) {
-      // change to "select" cursor
-      map.getCanvas().style.cursor = "pointer";
-
       hoveredPAid = e.features[0].properties.id;
       // mapbox generated id
       hoveredPAidNum = e.features[0].id;
+      if (!selectedPAid || hoveredPAid == selectedPAid) {
+        // change to "select" cursor
+        map.getCanvas().style.cursor = "pointer";
 
-      // darken the Priority Area
-      map.setFeatureState({
-          source: "priorityAreaSource",
-          id: hoveredPAidNum
-        },
-        { active: true }
-      );
 
-      // display the PA's Cause Vector children
-      showChildren(layerId);
 
-      // if a node is not active: populate popup box
-      if (selectedPAidNum == null) {
-        var coordinates = e.lngLat;
-        var name = e.features[0].properties.name;
-        var description = e.features[0].properties.headline;
+        // darken the Priority Area
+        map.setFeatureState({
+            source: "priorityAreaSource",
+            id: hoveredPAidNum
+          },
+          { active: true }
+        );
 
-        // This helps prevent the popup box from overflowing outside the viewport
-        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        // display the PA's Cause Vector children
+        showChildren(layerId);
+
+        // if a node is not active: populate popup box
+        if (selectedPAidNum == null) {
+          var coordinates = e.lngLat;
+          var name = e.features[0].properties.name;
+          var description = e.features[0].properties.headline;
+
+          // This helps prevent the popup box from overflowing outside the viewport
+          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          }
+
+          // Populate the popup
+          popup
+            .setLngLat(coordinates)
+            .setHTML(`<h2>${name}</h2><p>${description}</p>`)
+            .addTo(map);
         }
-
-        // Populate the popup
-        popup
-          .setLngLat(coordinates)
-          .setHTML(`<h2>${name}</h2><p>${description}</p>`)
-          .addTo(map);
       }
     });
 
@@ -260,6 +274,7 @@ function createPriorityAreaLayers() {
         hideChildren(selectedPAidNum);
         hideChildren(selectedCVid);
         selectedPAidNum = null;
+        selectedPAid = null;
       } else {
         if (selectedPAidNum >= 0) {
           popup.remove();
@@ -287,44 +302,1473 @@ function createPriorityAreaLayers() {
 }
 
 // Loading geojson locally in the js file for testing purposes only
+// can later store in an S3 bucket or something similar
 function loadGeojsonSources() {
   priorityAreas = {
     "type": "FeatureCollection",
     "name": "priorityAreas",
     "features": [
-      { "type": "Feature", "properties": { "stroke": "#ff0000", "stroke-width": 2.0, "stroke-opacity": 1.0, "fill": "green", "fill-opacity": 0.5, "name": "Amazon Rainforest", "id": "amazonRainforest", "graph_type": "footprint", "headline": "The Amazon is one of the world's greatest carbon sinks and one of the world's most important homes of biodiversity.  In the late 20th Century, the Amazon would sequester about 2 billion tons of CO2 every year (almost half the USA's annual carbon footprint).  Due to deforestation, the Amazon now only sequesters approximately 1.1 billion tons of CO2 per year, and approximately 20% of the rainforest is actively emitting carbon.  The Amazon is currently 18% deforested, and research has indicated at 25% deforestation, it may reach a tipping point where the rainforest no longer becomes a carbon sink -- and starts becoming a savannah.  More than half of Amazon's deforestation is comes from the production of beef, soy, wood, and palm oil, which is driven by Brazil's current national policy and president Jair Bolsanaro, and likewise driven by consumption in countries like China, the United States, Indian, Germany, and Spain.  One potential strategy for improvement is eliminating the most destructive production taking place in the Amazon, and replacing it with sustainable logging practices, which can allow the rainforest to continue supporting local livelihoods while remaining an important resource of logging materials for the rest of the world. ", "entity": "natural", "CO2_impact": "-1,100,000,000", "CO2_trend": "red", "parentId": null, "products": null, "weight": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -64.599609375, -15.28418511407642 ], [ -44.560546875, -2.635788574166607 ], [ -45.615234375, -1.933226826477111 ], [ -47.98828125, -0.439448816413964 ], [ -50.361328125, -0.703107352436478 ], [ -52.294921875, -1.669685500986571 ], [ -50.009765625, 1.142502403706165 ], [ -50.88867187499999, 2.81137119333114 ], [ -52.55859375, 5.00339434502215 ], [ -54.404296875, 6.140554782450308 ], [ -56.25, 5.528510525692801 ], [ -58.359375, 6.926426847059551 ], [ -60.1171875, 8.320212289522944 ], [ -61.69921875, 9.535748998133627 ], [ -63.6328125, 10.31491928581316 ], [ -67.763671875, 10.228437266155943 ], [ -71.630859375, 5.878332109674327 ], [ -79.189453125, -2.02106511876699 ], [ -78.662109375, -4.214943141390639 ], [ -73.828125, -13.068776734357694 ], [ -64.599609375, -15.28418511407642 ] ] ] } },
-      { "type": "Feature", "properties": { "stroke": "#ff0000", "stroke-width": 3.0, "stroke-opacity": 1.0, "fill": "orange", "fill-opacity": 0.5, "name": "2020 United States Election", "id": "usElection2020", "graph_type": "footprint", "headline": "The 2020 US Election will influence environmental outcomes for the entire world.  Candidate Joe Biden has announced a $2 trillion Climate Infrastructure plan.  Conversely, the current administration has appointed fossil fuel lobbyists to high-level positions, and deliberately rolled back environmental protections.", "entity": "state", "CO2_impact": "7,000,000,000", "CO2_trend": "red", "parentId": null, "products": null, "weight": null }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -124.453125, 49.03786794532644 ], [ -124.62890625, 48.253941144634311 ], [ -123.969726562499986, 46.103708755980257 ], [ -124.5849609375, 42.908160071960538 ], [ -124.1455078125, 41.96765920367816 ], [ -124.277343749999986, 40.513799155044133 ], [ -124.013671874999986, 40.145289295676598 ], [ -123.706054687500014, 39.061849134291542 ], [ -122.431640625, 37.544577320855822 ], [ -121.9921875, 36.633162095586577 ], [ -120.410156249999986, 34.524661471771722 ], [ -118.30078125, 34.016241889667015 ], [ -116.982421874999986, 32.583849325656622 ], [ -114.609375, 32.879587173066305 ], [ -114.785156249999986, 32.583849325656622 ], [ -111.1376953125, 31.466153715024294 ], [ -108.2373046875, 31.42866311735861 ], [ -108.061523437499986, 31.914867503276223 ], [ -106.4794921875, 31.765537409484374 ], [ -104.765625, 30.410781790845888 ], [ -104.6337890625, 29.764377375163129 ], [ -103.095703125, 29.113775395114391 ], [ -102.568359375, 29.916852233070173 ], [ -101.4697265625, 29.80251790576445 ], [ -99.66796875, 27.722435918973432 ], [ -98.9208984375, 26.431228064506438 ], [ -97.2509765625, 25.918526162075153 ], [ -97.470703125, 27.449790329784214 ], [ -96.6796875, 28.613459424004414 ], [ -95.7568359375, 28.806173508854776 ], [ -93.955078125, 29.80251790576445 ], [ -92.0654296875, 29.688052749856801 ], [ -91.8017578125, 29.80251790576445 ], [ -90.703125, 29.34387539941801 ], [ -89.7802734375, 29.611670115197377 ], [ -89.7802734375, 29.954934549656144 ], [ -90.4833984375, 30.29701788337205 ], [ -88.242187499999986, 30.448673679287559 ], [ -88.0224609375, 30.675715404167743 ], [ -87.7587890625, 30.372875188118016 ], [ -87.3193359375, 30.486550842588485 ], [ -86.1328125, 30.448673679287559 ], [ -84.990234375, 29.764377375163129 ], [ -84.0234375, 30.145127183376129 ], [ -82.6171875, 29.075375179558346 ], [ -82.7490234375, 28.07198030177986 ], [ -82.5732421875, 27.644606381943326 ], [ -81.9580078125, 26.902476886279832 ], [ -81.6943359375, 26.07652055985697 ], [ -80.8154296875, 25.284437746983055 ], [ -80.375976562499986, 25.403584973186703 ], [ -80.068359375, 27.059125784374068 ], [ -80.5517578125, 27.761329874505233 ], [ -81.03515625, 29.228890030194229 ], [ -81.6064453125, 30.826780904779774 ], [ -81.123046875, 31.690781806136822 ], [ -80.4638671875, 32.43561304116276 ], [ -79.9365234375, 32.805744732906881 ], [ -79.277343749999986, 33.284619968887675 ], [ -78.442382812499986, 33.943359946578823 ], [ -77.9150390625, 34.125447565116126 ], [ -77.431640625, 34.633207911379593 ], [ -76.4208984375, 34.88593094075317 ], [ -76.728515625, 35.424867919305584 ], [ -76.1572265625, 35.424867919305584 ], [ -75.849609375, 35.92464453144099 ], [ -76.46484375, 35.995785386420323 ], [ -76.11328125, 36.703659597194559 ], [ -76.5087890625, 37.753344013106563 ], [ -75.8056640625, 37.649034021578657 ], [ -74.00390625, 40.044437584608559 ], [ -73.65234375, 40.680638025214563 ], [ -72.3779296875, 41.013065787006298 ], [ -72.24609375, 41.376808565702355 ], [ -69.9609375, 41.836827860727141 ], [ -70.6640625, 41.96765920367816 ], [ -71.059570312499986, 42.358543917497052 ], [ -70.7958984375, 42.617791432823459 ], [ -70.7958984375, 43.133061162406122 ], [ -70.048828125, 43.929549935614595 ], [ -68.9501953125, 44.150681159780937 ], [ -68.818359375, 44.465151013519616 ], [ -66.796875, 44.746733240246783 ], [ -67.4560546875, 45.182036837015886 ], [ -67.5, 45.614037411350928 ], [ -67.8515625, 45.736859547360488 ], [ -67.8515625, 46.98025235521883 ], [ -68.8623046875, 47.070121823833091 ], [ -69.2138671875, 47.398349200359263 ], [ -70.0048828125, 46.649436163350245 ], [ -70.400390625, 45.890008158661843 ], [ -71.103515625, 45.274886437048913 ], [ -71.89453125, 44.99588261816546 ], [ -74.926757812499986, 45.120052841530544 ], [ -76.2451171875, 44.056011695785251 ], [ -76.025390625, 43.675818093283411 ], [ -77.080078125, 43.357138222110528 ], [ -79.013671875, 43.197167282501276 ], [ -78.837890625, 42.714732185394581 ], [ -82.3974609375, 41.343824581185686 ], [ -83.3203125, 41.804078144272339 ], [ -82.44140625, 42.811521745097899 ], [ -83.0126953125, 44.024421519659342 ], [ -83.8037109375, 43.802818719047202 ], [ -83.4521484375, 45.213003555993964 ], [ -84.7705078125, 45.706179285330855 ], [ -85.95703125, 45.089035564831036 ], [ -86.1328125, 43.197167282501276 ], [ -88.242187499999986, 41.640078384678937 ], [ -87.1875, 45.828799251921339 ], [ -83.671875, 45.951149686691402 ], [ -83.84765625, 46.800059446787316 ], [ -87.71484375, 46.437856895024204 ], [ -88.59375, 47.159840013044317 ], [ -91.58203125, 46.800059446787316 ], [ -89.296875, 47.989921667414194 ], [ -94.39453125, 49.03786794532644 ], [ -124.453125, 49.03786794532644 ] ] ] } }
-    ]
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 2,
+          "stroke-opacity": 1,
+          "fill": "green",
+          "fill-opacity": 0.5,
+          "name": "Amazon Rainforest",
+          "id": "amazonRainforest",
+          "type": "natural",
+          "headline": "The Amazon is one of the world's greatest carbon sinks and one of the world's most important homes of biodiversity.  In the late 20th Century, the Amazon would sequester about 2 billion tons of CO2 every year (almost half the USA's annual carbon footprint).  Due to deforestation, the Amazon now only sequesters approximately 1.1 billion tons of CO2 per year, and approximately 20% of the rainforest is actively emitting carbon.  The Amazon is currently 18% deforested, and research has indicated at 25% deforestation, it may reach a tipping point where the rainforest no longer becomes a carbon sink -- and starts becoming a savannah.  More than half of Amazon's deforestation is comes from the production of beef, soy, wood, and palm oil, which is driven by Brazil's current national policy and president Jair Bolsanaro, and likewise driven by consumption in countries like China, the United States, Indian, Germany, and Spain.  One potential strategy for improvement is eliminating the most destructive production taking place in the Amazon, and replacing it with sustainable logging practices, which can allow the rainforest to continue supporting local livelihoods while remaining an important resource of logging materials for the rest of the world. ",
+          "CO2_impact": "-1,100,000,000",
+          "CO2_trend": "red",
+          "childId": ["brazil_china_exports","brazil_national_policy","brazil_USA_exports","brazil_italy_exports","brazil_spain_exports", "brazil_colombia_exports", "brazil_germany_exports", "brazil_india_exports"]
+      },
+      "geometry": { "type": "Polygon", "coordinates": [ [ [ -64.599609375, -15.28418511407642 ], [ -44.560546875, -2.635788574166607 ], [ -45.615234375, -1.933226826477111 ], [ -47.98828125, -0.439448816413964 ], [ -50.361328125, -0.703107352436478 ], [ -52.294921875, -1.669685500986571 ], [ -50.009765625, 1.142502403706165 ], [ -50.88867187499999, 2.81137119333114 ], [ -52.55859375, 5.00339434502215 ], [ -54.404296875, 6.140554782450308 ], [ -56.25, 5.528510525692801 ], [ -58.359375, 6.926426847059551 ], [ -60.1171875, 8.320212289522944 ], [ -61.69921875, 9.535748998133627 ], [ -63.6328125, 10.31491928581316 ], [ -67.763671875, 10.228437266155943 ], [ -71.630859375, 5.878332109674327 ], [ -79.189453125, -2.02106511876699 ], [ -78.662109375, -4.214943141390639 ], [ -73.828125, -13.068776734357694 ], [ -64.599609375, -15.28418511407642 ] ] ] } },
+      { "type": "Feature",
+      "properties": {
+        "stroke": "#ff0000",
+        "stroke-width": 3,
+        "stroke-opacity": 1,
+        "fill": "orange",
+        "fill-opacity": 0.5,
+        "name": "2020 United States Election",
+        "id": "usElection2020",
+        "headline": "The 2020 US Election will influence environmental outcomes for the entire world.  Candidate Joe Biden has announced a $2 trillion Climate Infrastructure plan.  Conversely, the current administration has appointed fossil fuel lobbyists to high-level positions, and deliberately rolled back environmental protections.",
+        "type": "geopolitical",
+        "CO2_impact": "7,000,000,000",
+        "CO2_trend": "red",
+        "childId": ["florida_election_2020", "michigan_election_2020", "pennsylvania_election_2020", "northcarolina_election_2020", "arizona_election_2020", "wisconsin_election_2020"]
+      },
+      "geometry": { "type": "Polygon", "coordinates": [ [ [ -124.453125, 49.03786794532644 ], [ -124.62890625, 48.253941144634311 ], [ -123.969726562499986, 46.103708755980257 ], [ -124.5849609375, 42.908160071960538 ], [ -124.1455078125, 41.96765920367816 ], [ -124.277343749999986, 40.513799155044133 ], [ -124.013671874999986, 40.145289295676598 ], [ -123.706054687500014, 39.061849134291542 ], [ -122.431640625, 37.544577320855822 ], [ -121.9921875, 36.633162095586577 ], [ -120.410156249999986, 34.524661471771722 ], [ -118.30078125, 34.016241889667015 ], [ -116.982421874999986, 32.583849325656622 ], [ -114.609375, 32.879587173066305 ], [ -114.785156249999986, 32.583849325656622 ], [ -111.1376953125, 31.466153715024294 ], [ -108.2373046875, 31.42866311735861 ], [ -108.061523437499986, 31.914867503276223 ], [ -106.4794921875, 31.765537409484374 ], [ -104.765625, 30.410781790845888 ], [ -104.6337890625, 29.764377375163129 ], [ -103.095703125, 29.113775395114391 ], [ -102.568359375, 29.916852233070173 ], [ -101.4697265625, 29.80251790576445 ], [ -99.66796875, 27.722435918973432 ], [ -98.9208984375, 26.431228064506438 ], [ -97.2509765625, 25.918526162075153 ], [ -97.470703125, 27.449790329784214 ], [ -96.6796875, 28.613459424004414 ], [ -95.7568359375, 28.806173508854776 ], [ -93.955078125, 29.80251790576445 ], [ -92.0654296875, 29.688052749856801 ], [ -91.8017578125, 29.80251790576445 ], [ -90.703125, 29.34387539941801 ], [ -89.7802734375, 29.611670115197377 ], [ -89.7802734375, 29.954934549656144 ], [ -90.4833984375, 30.29701788337205 ], [ -88.242187499999986, 30.448673679287559 ], [ -88.0224609375, 30.675715404167743 ], [ -87.7587890625, 30.372875188118016 ], [ -87.3193359375, 30.486550842588485 ], [ -86.1328125, 30.448673679287559 ], [ -84.990234375, 29.764377375163129 ], [ -84.0234375, 30.145127183376129 ], [ -82.6171875, 29.075375179558346 ], [ -82.7490234375, 28.07198030177986 ], [ -82.5732421875, 27.644606381943326 ], [ -81.9580078125, 26.902476886279832 ], [ -81.6943359375, 26.07652055985697 ], [ -80.8154296875, 25.284437746983055 ], [ -80.375976562499986, 25.403584973186703 ], [ -80.068359375, 27.059125784374068 ], [ -80.5517578125, 27.761329874505233 ], [ -81.03515625, 29.228890030194229 ], [ -81.6064453125, 30.826780904779774 ], [ -81.123046875, 31.690781806136822 ], [ -80.4638671875, 32.43561304116276 ], [ -79.9365234375, 32.805744732906881 ], [ -79.277343749999986, 33.284619968887675 ], [ -78.442382812499986, 33.943359946578823 ], [ -77.9150390625, 34.125447565116126 ], [ -77.431640625, 34.633207911379593 ], [ -76.4208984375, 34.88593094075317 ], [ -76.728515625, 35.424867919305584 ], [ -76.1572265625, 35.424867919305584 ], [ -75.849609375, 35.92464453144099 ], [ -76.46484375, 35.995785386420323 ], [ -76.11328125, 36.703659597194559 ], [ -76.5087890625, 37.753344013106563 ], [ -75.8056640625, 37.649034021578657 ], [ -74.00390625, 40.044437584608559 ], [ -73.65234375, 40.680638025214563 ], [ -72.3779296875, 41.013065787006298 ], [ -72.24609375, 41.376808565702355 ], [ -69.9609375, 41.836827860727141 ], [ -70.6640625, 41.96765920367816 ], [ -71.059570312499986, 42.358543917497052 ], [ -70.7958984375, 42.617791432823459 ], [ -70.7958984375, 43.133061162406122 ], [ -70.048828125, 43.929549935614595 ], [ -68.9501953125, 44.150681159780937 ], [ -68.818359375, 44.465151013519616 ], [ -66.796875, 44.746733240246783 ], [ -67.4560546875, 45.182036837015886 ], [ -67.5, 45.614037411350928 ], [ -67.8515625, 45.736859547360488 ], [ -67.8515625, 46.98025235521883 ], [ -68.8623046875, 47.070121823833091 ], [ -69.2138671875, 47.398349200359263 ], [ -70.0048828125, 46.649436163350245 ], [ -70.400390625, 45.890008158661843 ], [ -71.103515625, 45.274886437048913 ], [ -71.89453125, 44.99588261816546 ], [ -74.926757812499986, 45.120052841530544 ], [ -76.2451171875, 44.056011695785251 ], [ -76.025390625, 43.675818093283411 ], [ -77.080078125, 43.357138222110528 ], [ -79.013671875, 43.197167282501276 ], [ -78.837890625, 42.714732185394581 ], [ -82.3974609375, 41.343824581185686 ], [ -83.3203125, 41.804078144272339 ], [ -82.44140625, 42.811521745097899 ], [ -83.0126953125, 44.024421519659342 ], [ -83.8037109375, 43.802818719047202 ], [ -83.4521484375, 45.213003555993964 ], [ -84.7705078125, 45.706179285330855 ], [ -85.95703125, 45.089035564831036 ], [ -86.1328125, 43.197167282501276 ], [ -88.242187499999986, 41.640078384678937 ], [ -87.1875, 45.828799251921339 ], [ -83.671875, 45.951149686691402 ], [ -83.84765625, 46.800059446787316 ], [ -87.71484375, 46.437856895024204 ], [ -88.59375, 47.159840013044317 ], [ -91.58203125, 46.800059446787316 ], [ -89.296875, 47.989921667414194 ], [ -94.39453125, 49.03786794532644 ], [ -124.453125, 49.03786794532644 ] ] ] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "stroke": "#555555",
+        "stroke-width": 2,
+        "stroke-opacity": 1,
+        "fill": "#555555",
+        "fill-opacity": 0.5,
+        "name": "Global Warming",
+        "id": "globalWarming",
+        "headline": "Global Warming is primarily driven by greenhouse gas (GHG) emissions since the Industrial Revolution.  Increasing temperatures affect ecosystems and natural systems around the world, including the ability for our oceans to support marine life, the ability for our forests to support biodiversity, and the ability for weather patterns (such as ocean currents and seasonal trends) to keep natural systems in balance.  As natural systems lose their ability to support marine life and forest life, they also lose the ability to support human life.  And as these ecosystems degrade, they start realising more GHG emissions than they sequester, which will acceleratethe loop of atmospheric warming, environmental degradation, and risks for all life on Earth. ",
+        "type": "natural",
+        "CO2_impact": "-1,100,000,000",
+        "CO2_trend": "red",
+        "childId": ["usa_emissions", "china_emissions", "indonesia_emissions", "india_emissions", "russia_emissions"]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -159.2578125,
+              77.61770905279676
+            ],
+            [
+              -132.890625,
+              75.58493740869223
+            ],
+            [
+              -105.8203125,
+              74.77584300649235
+            ],
+            [
+              -62.57812500000001,
+              74.68325030051861
+            ],
+            [
+              -20.7421875,
+              74.21198251594369
+            ],
+            [
+              15.1171875,
+              74.68325030051861
+            ],
+            [
+              52.734375,
+              74.95939165894974
+            ],
+            [
+              92.10937499999999,
+              76.10079606754579
+            ],
+            [
+              102.65625,
+              77.38950400539731
+            ],
+            [
+              64.3359375,
+              80.92842569282253
+            ],
+            [
+              23.203125,
+              81.72318761821155
+            ],
+            [
+              -23.203125,
+              82.07002819448267
+            ],
+            [
+              -56.953125,
+              82.26169873683153
+            ],
+            [
+              -106.171875,
+              82.1664460084773
+            ],
+            [
+              -134.6484375,
+              81.46626086056541
+            ],
+            [
+              -161.015625,
+              80.05804956215623
+            ],
+            [
+              -175.078125,
+              78.63000556774836
+            ],
+            [
+              -159.2578125,
+              77.61770905279676
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "stroke": "#ff0000",
+        "stroke-width": 2,
+        "stroke-opacity": 1,
+        "fill": "orange",
+        "fill-opacity": 0.5,
+        "name": "Adani Carmichael Coal Mine",
+        "id": "adaniCoalMine",
+        "headline": "The Adani Group is currently pursuing development of an international coal mine, planned to sit between the Galilee Basin and the Great Barrier Reef.  If built, this project will destroy the ancestral lands of Indigenous people, threaten 270 billion liters of Queensland groundwater, add 4.6 billion tons of CO2 to the atmosphere over the next 60 years, and pave the way for at least 8 more coal mines in the Galille Basin.  Many insurers, contractors, and project partners have stepped away from the project because of these problems -- but several corporate entities are still involved in the project, includin Marsh (insurer), Hanwha, and the Industrial Bank of Korea. www.stopadani.com is leading an effort to call on all partners and facilitators to reject this project, and other fossil fuel projects in the future.",
+        "type": "fossilFuelProject",
+        "CO2_impact": "-1,100,000,000",
+        "CO2_trend": "red",
+        "childId": ["IBK_adani_funding", "marsh_adani_funding", "adani_adani_funding"]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              146.0302734375,
+              -21.27913739410871
+            ],
+            [
+              149.161376953125,
+              -21.135745255030592
+            ],
+            [
+              148.20556640625,
+              -20.014645445341355
+            ],
+            [
+              146.0302734375,
+              -21.27913739410871
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "stroke": "#ff0000",
+        "stroke-width": 2,
+        "stroke-opacity": 1,
+        "fill": "orange",
+        "fill-opacity": 0.5,
+        "name": "Ocean Pollution",
+        "id": "oceanPollution",
+        "type": "plastic",
+        "headline": "Around the world, ocean pollution has collected in large patches in the every major ocean.  Most famous is the Great Pacfic Garbage Patch actually exists in two locations -- one patch off the coast of California, and another patch off the coast of Japan.  The majority of global plastic waste is exported to facilities in Southeast Asia.  However, these facilities are not equipped to deal with the volume of plastic they recieve.  As a result, about 2/3rds of ocean plastic comes from overburned rivers in Asia.  Other major sources include the Nile and Niger rivers in Africa, and the Amazon river in South America.",
+        "CO2_impact": "0",
+        "CO2_trend": "red",
+        "childId": ["yangtzeRiver_plastic", "nileRiver_plastic", "amazonRiver_plastic"]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -214.98046875,
+              41.244772343082076
+            ],
+            [
+              -214.98046875,
+              30.90222470517144
+            ],
+            [
+              -206.54296875,
+              31.353636941500987
+            ],
+            [
+              -204.2578125,
+              38.95940879245423
+            ],
+            [
+              -138.515625,
+              40.3130432088809
+            ],
+            [
+              -135.35156249999997,
+              32.99023555965106
+            ],
+            [
+              -126.73828125,
+              33.7243396617476
+            ],
+            [
+              -127.61718749999999,
+              42.5530802889558
+            ],
+            [
+              -214.98046875,
+              41.244772343082076
+            ]
+          ]
+        ]
+      }
+    }]
   };
 
   causeVectors = {
     "type": "FeatureCollection",
     "name": "causeVectors",
     "features": [
-      { "type": "Feature", "properties": { "rootId": "amazonRainforest", "stroke": "#f50000", "stroke-width": 4.0, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Brazil exports to China", "id": "brazil_china_exports", "graph_type": "cause", "headline": "Beef and soy production are two of the main drivers of Amazon deforestation.  China (and Hong Kong) purchases 55% of all beef from the Amazon, and China purchases 82% of all soybeans from the Amazon.", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "amazonRainforest", "products": [ { "name": "beef", "amount_USD": "2,700,000,000", "pct_total": "0.55", "weight": "0.25" }, { "name": "soy", "amount_USD": "28,306,000,000", "pct_total": "0.82", "weight": "0.3" } ], "weight": 0.55 }, "geometry": { "type": "LineString", "coordinates": [ [ -44.6484375, -2.460181181020993 ], [ 116.3671875, 40.713955826286046 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "amazonRainforest", "stroke": "#ff0000", "stroke-width": 3.0, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Brazil National Policy", "id": "brazil_national_policy", "graph_type": "cause", "headline": "President Jair Bolsanaro has made it a national policy to extract value from the Amazon at the expense of the rainforest's future.", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "amazonRainforest", "products": null, "weight": 0.25 }, "geometry": { "type": "LineString", "coordinates": [ [ -57.22046875, -11.000607953624762 ], [ -46.6259765625, -23.503551897424121 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "amazonRainforest", "stroke": "#ff0000", "stroke-width": 2.0, "stroke-opacity": 0.7, "fill": null, "fill-opacity": null, "name": "Brazil exports to United States", "id": "brazil_USA_exports", "graph_type": "cause", "headline": "Logging is one of the main drivers of Amazon deforestation, and the United States purchases about 1\/3rd of all of Brazil's wood products.", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "amazonRainforest", "products": [ { "name": "wood", "amount_USD": "1,270,000,000", "pct_total": "0.33", "weight": "0.25" } ], "weight": 0.15 }, "geometry": { "type": "LineString", "coordinates": [ [ -65.390625, 10.833305983642491 ], [ -77.0361328125, 38.92522904714054 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "amazonRainforest", "stroke": "#ff0000", "stroke-width": 0.5, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Brazil exports to Italy", "id": "brazil_italy_exports", "graph_type": "cause", "headline": "Beef is one of the main drivers of Amazon deforestation, and Italy purchases about ~3.5% of all of Brazil's beef products.", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "amazonRainforest", "products": [ { "name": "beef", "amount_USD": "160,000,000", "pct_total": "0.0349", "weight": "0.25" } ], "weight": 0.02 }, "geometry": { "type": "LineString", "coordinates": [ [ -51.15234375, 4.039617826768437 ], [ 12.54638671875, 42.000325148316207 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "amazonRainforest", "stroke": "#ff0000", "stroke-width": 0.5, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Brazil exports to Spain", "id": "brazil_spain_exports", "graph_type": "cause", "headline": "Soy is one of the main drivers of Amazon deforestation, and Spain purchases ~2% of all of Brazil's soy products.", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "amazonRainforest", "products": [ { "name": "soy", "amount_USD": "742,000,000", "pct_total": "0.02", "weight": "0.25" } ], "weight": 0.015 }, "geometry": { "type": "LineString", "coordinates": [ [ -52.20703125, 5.441022303717974 ], [ -3.69140625, 40.547200234410489 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "amazonRainforest", "stroke": "#ff0000", "stroke-width": 0.5, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Brazil exports to Colombia", "id": "brazil_colombia_exports", "graph_type": "cause", "headline": "Palm oil is one of the main drivers of Amazon deforestation, and Colombia purchases ~44% of all Brazil's palm oil products.", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "amazonRainforest" , "products": [ { "name": "palm_oil", "amount_USD": "10,000,000", "pct_total": "0.42", "weight": "0.25" } ], "weight": 0.045 }, "geometry": { "type": "LineString", "coordinates": [ [ -73.476562499999986, 4.171115454867424 ], [ -73.959960937499986, 4.609278084409835 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "amazonRainforest", "stroke": "#ff0000", "stroke-width": 0.5, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Brazil exports to India", "id": "brazil_india_exports", "graph_type": "cause", "headline": "Soy is one of the main drivers of Amazon deforestation, and India purchases ~52% of all of Brazil's soybean oil.", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "amazonRainforest", "products": [ { "name": "soybean_oil", "amount_USD": "535,000,000", "pct_total": "0.52", "weight": "0.25" } ], "weight": 0.04 }, "geometry": { "type": "LineString", "coordinates": [ [ -44.12109375, -3.162455530237848 ], [ 77.255859375, 28.613459424004414 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "amazonRainforest", "stroke": "#ff0000", "stroke-width": 0.5, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Brazil exports to Germany", "id": "brazil_germany_exports", "graph_type": "cause", "headline": "Palm oil is one of the main drivers of Amazon deforestation, and Germany purchases ~30.1% of all Brazil's palm oil products.", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "amazonRainforest", "products": [ { "name": "palm_oil", "amount_USD": "6,800,000", "pct_total": "0.301", "weight": "0.25" } ], "weight": 0.04 }, "geometry": { "type": "LineString", "coordinates": [ [ -51.861328125, 4.496727241761671 ], [ 11.46435546875, 48.166085419012532 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "usElection2020", "stroke": "#ff0000", "stroke-width": 5.0, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Swing State: Florida", "id": "florida_election_2020", "graph_type": "cause", "headline": "Florida is one of the most important swing states, with 29 electoral votes of the ~137 electoral votes most up for grabs. ", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "usElection2020", "products": null, "weight": 0.18 }, "geometry": { "type": "LineString", "coordinates": [ [ -96.50390625, 39.095962936305476 ], [ -82.265625, 29.840643899834411 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "usElection2020", "stroke": "#ff0000", "stroke-width": 2.0, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Swing State: Michigan", "id": "michigan_election_2020", "graph_type": "cause", "headline": "Michigan is one of the most important swing states, with 16 electoral votes of the ~137 electoral votes most up for grabs. ", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "usElection2020", "products": null, "weight": 0.07 }, "geometry": { "type": "LineString", "coordinates": [ [ -96.591796875, 39.26628442213066 ], [ -83.408203125, 42.391008609205045 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "usElection2020", "stroke": "#ff0000", "stroke-width": 1.5, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Swing State: Wisconsin", "id": "wisconsin_election_2020", "graph_type": "cause", "headline": "Wisconsin is one of the most important swing states, with 10 electoral votes of the ~137 electoral votes most up for grabs. ", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "usElection2020", "products": null, "weight": 0.06 }, "geometry": { "type": "LineString", "coordinates": [ [ -96.5478515625, 39.26628442213066 ], [ -89.3408203125, 43.068887774169625 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "usElection2020", "stroke": "#ff0000", "stroke-width": 3.5, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Swing State: Pennsylvania", "id": "pennsylvania_election_2020", "graph_type": "cause", "headline": "Pennsylvania is one of the most important swing states, with 20 electoral votes of the ~137 electoral votes most up for grabs. ", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "usElection2020", "products": null, "weight": 0.11 }, "geometry": { "type": "LineString", "coordinates": [ [ -96.591796875, 39.26628442213066 ], [ -75.157470703125, 39.960280354295698 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "usElection2020", "stroke": "#ff0000", "stroke-width": 1.4, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Swing State: Arizona", "id": "arizona_election_2020", "graph_type": "cause", "headline": "Arizona is one of the most important swing states, with 11 electoral votes of the ~137 electoral votes most up for grabs. ", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "usElection2020", "products": null, "weight": 0.065 }, "geometry": { "type": "LineString", "coordinates": [ [ -96.7236328125, 39.26628442213066 ], [ -112.0166015625, 33.46810795527896 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "usElection2020", "stroke": "#ff0000", "stroke-width": 1.4, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Swing State: North Carolina", "id": "northcarolina_election_2020", "graph_type": "cause", "headline": "North Carolina is one of the most important swing states, with 15 electoral votes of the ~137 electoral votes most up for grabs. ", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "usElection2020", "products": null, "weight": 0.07 }, "geometry": { "type": "LineString", "coordinates": [ [ -96.61376953125, 39.317300373271024 ], [ -79.34326171875, 35.906849306771207 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "amazonRainforest", "stroke": "#ff0000", "stroke-width": 4.0, "stroke-opacity": 0.7, "fill": null, "fill-opacity": null, "name": "Amazon Logging Imports", "id": "brazil_USA_exports_amazon", "graph_type": "cause", "headline": "Amazon is one of the companies which buy the majority of Brazilian logging products.", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "brazil_USA_exports", "products": [ { "name": "wood", "amount_USD": "1,270,000,000", "pct_total": "0.33", "weight": "0.25" } ], "weight": 0.25 }, "geometry": { "type": "LineString", "coordinates": [ [ -74.619140625, 34.089061315849939 ], [ -122.32177734375, 47.613569753973977 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "amazonRainforest", "stroke": "#ff0000", "stroke-width": 3.0, "stroke-opacity": 0.7, "fill": null, "fill-opacity": null, "name": "Home Depot Logging Imports", "id": "brazil_USA_exports_homedepot", "graph_type": "cause", "headline": "Home Depot is one of the companies which buy the majority of Brazilian logging products.", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "brazil_USA_exports", "products": [ { "name": "wood", "amount_USD": "1,270,000,000", "pct_total": "0.33", "weight": "0.25" } ], "weight": 0.18 }, "geometry": { "type": "LineString", "coordinates": [ [ -74.70703125, 34.016241889667015 ], [ -84.375, 33.760882000869167 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "amazonRainforest", "stroke": "#ff0000", "stroke-width": 2.0, "stroke-opacity": 0.7, "fill": null, "fill-opacity": null, "name": "Acme Corp. Logging Imports", "id": "brazil_USA_exports_acme", "graph_type": "cause", "headline": "Acme is one of the companies which buy the majority of Brazilian logging products.", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "brazil_USA_exports", "products": [ { "name": "wood", "amount_USD": "1,270,000,000", "pct_total": "0.33", "weight": "0.25" } ], "weight": 0.1 }, "geometry": { "type": "LineString", "coordinates": [ [ -75.5859375, 35.995785386420323 ], [ -74.4873046875, 40.34654412118006 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "amazonRainforest", "stroke": "#ff0000", "stroke-width": 6.0, "stroke-opacity": 0.7, "fill": null, "fill-opacity": null, "name": "Shanghai Corp Beef Imports", "id": "brazil_USA_exports_shanghaicorp", "graph_type": "cause", "headline": "Shanghai Corp is one of the companies which buy the majority of Brazilian beef products.", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "brazil_china_exports", "products": [ { "name": "wood", "amount_USD": "1,270,000,000", "pct_total": "0.33", "weight": "0.25" } ], "weight": 0.33 }, "geometry": { "type": "LineString", "coordinates": [ [ 91.93359375, 35.02999636902566 ], [ 121.640625, 31.128199299111959 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "amazonRainforest", "stroke": "#ff0000", "stroke-width": 4.0, "stroke-opacity": 0.7, "fill": null, "fill-opacity": null, "name": "Hong Kong Corp Beef Imports", "id": "brazil_china_exports_hongkongcorp", "graph_type": "cause", "headline": "Hong Kong Corp Corp is one of the companies which buy the majority of Brazilian beef products.", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "brazil_china_exports", "products": [ { "name": "wood", "amount_USD": "1,270,000,000", "pct_total": "0.33", "weight": "0.25" } ], "weight": 0.2 }, "geometry": { "type": "LineString", "coordinates": [ [ 92.460937499999986, 35.101934057246062 ], [ 114.169921875, 22.350075806124867 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "amazonRainforest", "stroke": "#ff0000", "stroke-width": 3.0, "stroke-opacity": 0.7, "fill": null, "fill-opacity": null, "name": "Jiangsu Corp Beef Imports", "id": "brazil_china_exports_jiangsucorp", "graph_type": "cause", "headline": "Jiangsu Corp is one of the companies which buy the majority of Brazilian logging products.", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "brazil_china_exports", "products": [ { "name": "wood", "amount_USD": "1,270,000,000", "pct_total": "0.33", "weight": "0.25" } ], "weight": 0.1 }, "geometry": { "type": "LineString", "coordinates": [ [ 92.373046875, 34.813803317113155 ], [ 120.05859375, 33.50475906922609 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "usElection2020", "stroke": "#ff0000", "stroke-width": 5.0, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Swing City: Tampa Bay, Florida", "id": "tampa_florida_election_2020", "graph_type": "cause", "headline": "Tampa Bay is one of the most important swing cities in the Florida state election. ", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "florida_election_2020", "products": null, "weight": 0.18 }, "geometry": { "type": "LineString", "coordinates": [ [ -82.72705078125, 30.240086360983426 ], [ -82.46337890625, 27.897349229684259 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "usElection2020", "stroke": "#ff0000", "stroke-width": 5.0, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Swing City: Orlando, Florida", "id": "orlando_florida_election_2020", "graph_type": "cause", "headline": "Orlando is one of the most important swing cities in the Florida state election. ", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "florida_election_2020", "products": null, "weight": 0.18 }, "geometry": { "type": "LineString", "coordinates": [ [ -82.705078125, 30.154627220775971 ], [ -81.375732421875, 28.526622418648127 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "usElection2020", "stroke": "#ff0000", "stroke-width": 2.0, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Swing City: Detroit, Michigan", "id": "detroit_michigan_election_2020", "graph_type": "cause", "headline": "Detroit is one of the most important swing cities in the Michigan state election. ", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "michigan_election_2020", "products": null, "weight": 0.18 }, "geometry": { "type": "LineString", "coordinates": [ [ -84.3804931640625, 42.163403424224008 ], [ -83.045654296875, 42.350425122434572 ] ] } },
-      { "type": "Feature", "properties": { "rootId": "usElection2020", "stroke": "#ff0000", "stroke-width": 1.0, "stroke-opacity": 1.0, "fill": null, "fill-opacity": null, "name": "Swing City: East Lansing, Michigan", "id": "eastlansing_michigan_election_2020", "graph_type": "cause", "headline": "East Lansing is one of the most important swing cities in the Michigan state election. ", "entity": null, "CO2_impact": null, "CO2_trend": null, "parentId": "michigan_election_2020", "products": null, "weight": 0.18 }, "geometry": { "type": "LineString", "coordinates": [ [ -84.83642578125, 42.065606754057157 ], [ -84.495849609375, 42.734909146515598 ] ] } }
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#f50000",
+          "stroke-width": 4,
+          "stroke-opacity": 1,
+          "name": "Brazil exports to China",
+          "id": "brazil_china_exports",
+          "childId": ["brazil_china_exports_shanghaicorp", "brazil_china_exports_hongkongcorp", "brazil_china_exports_jiangsucorp"],
+          "rootId":"amazonRainforest",
+          "parentId": "amazonRainforest",
+          "headline": "Beef and soy production are two of the main drivers of Amazon deforestation.  China (and Hong Kong) purchases 55% of all beef from the Amazon, and China purchases 82% of all soybeans from the Amazon.",
+          "type": "supplychain",
+          "products": "[{\"name\":\"beef\",\"amount_USD\":\"2,700,000,000\",\"pct_total\":\"0.55\",\"weight\":\"0.25\"},{\"name\":\"soy\",\"amount_USD\":\"28,306,000,000\",\"pct_total\":\"0.82\",\"weight\":\"0.3\"}]",
+          "weight": 0.55
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -44.6484375,
+              -2.460181181020993
+            ],
+            [
+              116.3671875,
+              40.713955826286046
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 3,
+          "stroke-opacity": 1,
+          "name": "Brazil National Policy",
+          "id": "brazil_national_policy",
+          "childId": [],
+          "rootId":"amazonRainforest",
+          "parentId": "amazonRainforest",
+          "headline": "President Jair Bolsanaro has made it a national policy to extract value from the Amazon at the expense of the rainforest's future.",
+          "type": "policy",
+          "weight": 0.25
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -57.22046875,
+              -11.000607953624762
+            ],
+            [
+              -46.6259765625,
+              -23.50355189742412
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 2,
+          "stroke-opacity": 0.7,
+          "name": "Brazil exports to United States",
+          "id": "brazil_USA_exports",
+          "childId": ["brazil_USA_exports_homedepot", "brazil_USA_exports_acme", "brazil_USA_exports_amazon"],
+          "rootId":"amazonRainforest",
+          "parentId": "amazonRainforest",
+          "headline": "Logging is one of the main drivers of Amazon deforestation, and the United States purchases about 1/3rd of all of Brazil's wood products.",
+          "type": "supplychain",
+          "products": "[{\"name\":\"wood\",\"amount_USD\":\"1,270,000,000\",\"pct_total\":\"0.33\",\"weight\":\"0.25\"}]",
+          "weight": 0.15
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -65.390625,
+              10.833305983642491
+            ],
+            [
+              -77.0361328125,
+              38.92522904714054
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 0.5,
+          "stroke-opacity": 1,
+          "name": "Brazil exports to Italy",
+          "id": "brazil_italy_exports",
+          "childId": [],
+          "rootId":"amazonRainforest",
+          "parentId": "amazonRainforest",
+          "headline": "Beef is one of the main drivers of Amazon deforestation, and Italy purchases about ~3.5% of all of Brazil's beef products.",
+          "type": "supplychain",
+          "products": "[{\"name\":\"beef\",\"amount_USD\":\"160,000,000\",\"pct_total\":\"0.0349\",\"weight\":\"0.25\"}]",
+          "weight": 0.02
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -51.15234375,
+              4.039617826768437
+            ],
+            [
+              12.54638671875,
+              42.00032514831621
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 0.5,
+          "stroke-opacity": 1,
+          "name": "Brazil exports to Spain",
+          "id": "brazil_spain_exports",
+          "childId": [],
+          "rootId":"amazonRainforest",
+          "parentId": "amazonRainforest",
+          "headline": "Soy is one of the main drivers of Amazon deforestation, and Spain purchases ~2% of all of Brazil's soy products.",
+          "type": "supplychain",
+          "products": "[{\"name\":\"soy\",\"amount_USD\":\"742,000,000\",\"pct_total\":\"0.02\",\"weight\":\"0.25\"}]",
+          "weight": 0.015
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -52.20703125,
+              5.441022303717974
+            ],
+            [
+              -3.69140625,
+              40.54720023441049
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 0.5,
+          "stroke-opacity": 1,
+          "name": "Brazil exports to Colombia",
+          "id": "brazil_colombia_exports",
+          "childId": [],
+          "rootId":"amazonRainforest",
+          "parentId": "amazonRainforest",
+          "type": "supplychain",
+          "headline": "Palm oil is one of the main drivers of Amazon deforestation, and Colombia purchases ~44% of all Brazil's palm oil products.",
+          "products": "[{\"name\":\"palm_oil\",\"amount_USD\":\"10,000,000\",\"pct_total\":\"0.42\",\"weight\":\"0.25\"}]",
+          "weight": 0.045
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -73.47656249999999,
+              4.171115454867424
+            ],
+            [
+              -73.95996093749999,
+              4.609278084409835
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 0.5,
+          "stroke-opacity": 1,
+          "name": "Brazil exports to India",
+          "id": "brazil_india_exports",
+          "childId": [],
+          "rootId":"amazonRainforest",
+          "parentId": "amazonRainforest",
+          "headline": "Soy is one of the main drivers of Amazon deforestation, and India purchases ~52% of all of Brazil's soybean oil.",
+          "type": "supplychain",
+          "products": "[{\"name\":\"soybean_oil\",\"amount_USD\":\"535,000,000\",\"pct_total\":\"0.52\",\"weight\":\"0.25\"}]",
+          "weight": 0.04
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -44.12109374999999,
+              -3.162455530237848
+            ],
+            [
+              77.255859375,
+              28.613459424004414
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 0.5,
+          "stroke-opacity": 1,
+          "name": "Brazil exports to Germany",
+          "id": "brazil_germany_exports",
+          "childId": [],
+          "rootId":"amazonRainforest",
+          "parentId": "amazonRainforest",
+          "headline": "Palm oil is one of the main drivers of Amazon deforestation, and Germany purchases ~30.1% of all Brazil's palm oil products.",
+          "type": "supplychain",
+          "products": "[{\"name\":\"palm_oil\",\"amount_USD\":\"6,800,000\",\"pct_total\":\"0.301\",\"weight\":\"0.25\"}]",
+          "weight": 0.04
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -51.861328125,
+              4.496727241761671
+            ],
+            [
+              11.46435546875,
+              48.16608541901253
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 5,
+          "stroke-opacity": 1,
+          "name": "Swing State: Florida",
+          "id": "florida_election_2020",
+          "childId": ["tampa_florida_election_2020", "orlando_florida_election_2020"],
+          "rootId":"usElection2020",
+          "parentId": "usElection2020",
+          "type": "election",
+          "headline": "Florida is one of the most important swing states, with 29 electoral votes of the ~137 electoral votes most up for grabs. ",
+          "weight": 0.18
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -96.50390625,
+              39.095962936305476
+            ],
+            [
+              -82.265625,
+              29.84064389983441
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 2,
+          "stroke-opacity": 1,
+          "name": "Swing State: Michigan",
+          "id": "michigan_election_2020",
+          "childId": ["detroit_michigan_election_2020", "eastlansing_michigan_election_2020"],
+          "rootId":"usElection2020",
+          "parentId": "usElection2020",
+          "type": "election",
+          "headline": "Michigan is one of the most important swing states, with 16 electoral votes of the ~137 electoral votes most up for grabs. ",
+          "weight": 0.07
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -96.591796875,
+              39.26628442213066
+            ],
+            [
+              -83.408203125,
+              42.391008609205045
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 1.5,
+          "stroke-opacity": 1,
+          "name": "Swing State: Wisconsin",
+          "id": "wisconsin_election_2020",
+          "childId": [],
+          "rootId":"usElection2020",
+          "parentId": "usElection2020",
+          "type": "election",
+          "headline": "Wisconsin is one of the most important swing states, with 10 electoral votes of the ~137 electoral votes most up for grabs. ",
+          "weight": 0.06
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -96.5478515625,
+              39.26628442213066
+            ],
+            [
+              -89.3408203125,
+              43.068887774169625
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 3.5,
+          "stroke-opacity": 1,
+          "name": "Swing State: Pennsylvania",
+          "id": "pennsylvania_election_2020",
+          "childId": [],
+          "rootId":"usElection2020",
+          "parentId": "usElection2020",
+          "type": "election",
+          "headline": "Pennsylvania is one of the most important swing states, with 20 electoral votes of the ~137 electoral votes most up for grabs. ",
+          "weight": 0.11
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -96.591796875,
+              39.26628442213066
+            ],
+            [
+              -75.157470703125,
+              39.9602803542957
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 1.4,
+          "stroke-opacity": 1,
+          "name": "Swing State: Arizona",
+          "id": "arizona_election_2020",
+          "childId": [],
+          "rootId":"usElection2020",
+          "parentId": "usElection2020",
+          "type": "election",
+          "headline": "Arizona is one of the most important swing states, with 11 electoral votes of the ~137 electoral votes most up for grabs. ",
+          "weight": 0.065
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -96.7236328125,
+              39.26628442213066
+            ],
+            [
+              -112.0166015625,
+              33.46810795527896
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 1.4,
+          "stroke-opacity": 1,
+          "name": "Swing State: North Carolina",
+          "id": "northcarolina_election_2020",
+          "childId": [],
+          "rootId":"usElection2020",
+          "parentId": "usElection2020",
+          "type": "election",
+          "headline": "North Carolina is one of the most important swing states, with 15 electoral votes of the ~137 electoral votes most up for grabs. ",
+          "weight": 0.07
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -96.61376953125,
+              39.317300373271024
+            ],
+            [
+              -79.34326171875,
+              35.90684930677121
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 4,
+          "stroke-opacity": 0.7,
+          "name": "Amazon Logging Imports",
+          "id": "brazil_USA_exports_amazon",
+          "childId": [],
+          "rootId":"amazonRainforest",
+          "parentId": "brazil_USA_exports",
+          "headline": "Amazon is one of the companies which buy the majority of Brazilian logging products.",
+          "type": "supplychain",
+          "products": "[{\"name\":\"wood\",\"amount_USD\":\"1,270,000,000\",\"pct_total\":\"0.33\",\"weight\":\"0.25\"}]",
+          "weight": 0.25
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -74.619140625,
+              34.08906131584994
+            ],
+            [
+              -122.32177734375,
+              47.61356975397398
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 3,
+          "stroke-opacity": 0.7,
+          "name": "Home Depot Logging Imports",
+          "id": "brazil_USA_exports_homedepot",
+          "childId": [],
+          "rootId":"amazonRainforest",
+          "parentId": "brazil_USA_exports",
+          "headline": "Home Depot is one of the companies which buy the majority of Brazilian logging products.",
+          "type": "supplychain",
+          "products": "[{\"name\":\"wood\",\"amount_USD\":\"1,270,000,000\",\"pct_total\":\"0.33\",\"weight\":\"0.25\"}]",
+          "weight": 0.18
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -74.70703125,
+              34.016241889667015
+            ],
+            [
+              -84.375,
+              33.76088200086917
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 2,
+          "stroke-opacity": 0.7,
+          "name": "Acme Corp. Logging Imports",
+          "id": "brazil_USA_exports_acme",
+          "childId": [],
+          "rootId":"amazonRainforest",
+          "parentId": "brazil_USA_exports",
+          "headline": "Acme is one of the companies which buy the majority of Brazilian logging products.",
+          "type": "supplychain",
+          "products": "[{\"name\":\"wood\",\"amount_USD\":\"1,270,000,000\",\"pct_total\":\"0.33\",\"weight\":\"0.25\"}]",
+          "weight": 0.1
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -75.5859375,
+              35.99578538642032
+            ],
+            [
+              -74.4873046875,
+              40.34654412118006
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 6,
+          "stroke-opacity": 0.7,
+          "name": "Shanghai Corp Beef Imports",
+          "id": "brazil_china_exports_shanghaicorp",
+          "childId": [],
+          "rootId":"amazonRainforest",
+          "parentId": "brazil_china_exports",
+          "headline": "Shanghai Corp is one of the companies which buy the majority of Brazilian beef products.",
+          "type": "supplychain",
+          "products": "[{\"name\":\"wood\",\"amount_USD\":\"1,270,000,000\",\"pct_total\":\"0.33\",\"weight\":\"0.25\"}]",
+          "weight": 0.33
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              91.93359375,
+              35.02999636902566
+            ],
+            [
+              121.640625,
+              31.12819929911196
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 4,
+          "stroke-opacity": 0.7,
+          "name": "Hong Kong Corp Beef Imports",
+          "id": "brazil_china_exports_hongkongcorp",
+          "childId": [],
+          "rootId":"amazonRainforest",
+          "parentId": "brazil_china_exports",
+          "headline": "Hong Kong Corp Corp is one of the companies which buy the majority of Brazilian beef products.",
+          "type": "supplychain",
+          "products": "[{\"name\":\"wood\",\"amount_USD\":\"1,270,000,000\",\"pct_total\":\"0.33\",\"weight\":\"0.25\"}]",
+          "weight": 0.2
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              92.46093749999999,
+              35.10193405724606
+            ],
+            [
+              114.169921875,
+              22.350075806124867
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 3,
+          "stroke-opacity": 0.7,
+          "name": "Jiangsu Corp Beef Imports",
+          "id": "brazil_china_exports_jiangsucorp",
+          "childId": [],
+          "rootId":"amazonRainforest",
+          "parentId": "brazil_china_exports",
+          "headline": "Jiangsu Corp is one of the companies which buy the majority of Brazilian logging products.",
+          "type": "supplychain",
+          "products": "[{\"name\":\"wood\",\"amount_USD\":\"1,270,000,000\",\"pct_total\":\"0.33\",\"weight\":\"0.25\"}]",
+          "weight": 0.1
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              92.373046875,
+              34.813803317113155
+            ],
+            [
+              120.05859375,
+              33.50475906922609
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 5,
+          "stroke-opacity": 1,
+          "name": "Swing City: Tampa Bay, Florida",
+          "id": "tampa_florida_election_2020",
+          "childId": [],
+          "rootId":"usElection2020",
+          "parentId": "florida_election_2020",
+          "type": "election",
+          "headline": "Tampa Bay is one of the most important swing cities in the Florida state election. ",
+          "weight": 0.18
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -82.72705078125,
+              30.240086360983426
+            ],
+            [
+              -82.46337890625,
+              27.89734922968426
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 5,
+          "stroke-opacity": 1,
+          "name": "Swing City: Orlando, Florida",
+          "id": "orlando_florida_election_2020",
+          "childId": [],
+          "rootId":"usElection2020",
+          "parentId": "florida_election_2020",
+          "type": "election",
+          "headline": "Orlando is one of the most important swing cities in the Florida state election. ",
+          "weight": 0.18
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -82.705078125,
+              30.15462722077597
+            ],
+            [
+              -81.375732421875,
+              28.526622418648127
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 5,
+          "stroke-opacity": 1,
+          "name": "Swing City: Detroit, Michigan",
+          "id": "detroit_michigan_election_2020",
+          "childId": [],
+          "rootId":"usElection2020",
+          "parentId": "michigan_election_2020",
+          "type": "election",
+          "headline": "Detroit is one of the most important swing cities in the Michigan state election. ",
+          "weight": 0.25
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -84.3804931640625,
+              42.16340342422401
+            ],
+            [
+              -83.045654296875,
+              42.35042512243457
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 5,
+          "stroke-opacity": 1,
+          "name": "Swing City: East Lansing, Michigan",
+          "id": "eastlansing_michigan_election_2020",
+          "childId": [],
+          "rootId":"usElection2020",
+          "parentId": "michigan_election_2020",
+          "type": "election",
+          "headline": "East Lansing is one of the most important swing cities in the Michigan state election.",
+          "weight": 0.15
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -84.83642578125,
+              42.06560675405716
+            ],
+            [
+              -84.495849609375,
+              42.7349091465156
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 2.7,
+          "stroke-opacity": 1,
+          "name": "USA Emissions",
+          "id": "usa_emissions",
+          "childId": ["nyc_emissions", "chicago_emissions", "losangeles_emissions"],
+          "rootId":"globalWarming",
+          "parentId": "globalWarming",
+          "headline": "USA is the #2 emitting country in the world, responsible for 14% of world emissions.  Within the United States, transportation accounts for 28% of emissions, electricity accounts for 27% of emissions, industry accounts for 22% of emissions, commercial/residential accounts for 12% of emissions, and agriculture accounts for 10% of emissions.",
+          "type": "emissions",
+          "products": "[]",
+          "weight": 0.14
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -70.3125,
+              74.21198251594369
+            ],
+            [
+              -73.47656249999999,
+              44.08758502824516
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 5,
+          "stroke-opacity": 1,
+          "name": "China Emissions",
+          "id": "china_emissions",
+          "childId": ["guangzhou_emissions", "hongkong_emissions", "shanghai_emissions"],
+          "rootId":"globalWarming",
+          "parentId": "globalWarming",
+          "headline": "China is the #1 emitting country in the world, responsible for 26% of global emissions.  Within China, the main drivers of emissions include exports (e.g. consumer exports to USA), electricity generation, the manufacturing of iron and steel for exports (a coal-intensive process), cement plants, and petroleum refineries.",
+          "type": "emissions",
+          "products": "[]",
+          "weight": 0.26
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              45.3515625,
+              74.21198251594369
+            ],
+            [
+              89.6484375,
+              39.639537564366684
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 1.3,
+          "stroke-opacity": 1,
+          "name": "India Emissions",
+          "id": "india_emissions",
+          "childId": [],
+          "rootId":"globalWarming",
+          "parentId": "globalWarming",
+          "headline": "India is the #3 emitting country in the world, responsible for 7% of global emissions.  Within India, 68.7% of emissions come from the energy sector, 19.6% come from agriculture, 6% come from industrial processes, 3.8% come from land use changes, and 1.9% come from forestry.",
+          "type": "emissions",
+          "products": "[]",
+          "weight": 0.07
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              42.890625,
+              73.92246884621463
+            ],
+            [
+              73.828125,
+              27.68352808378776
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 0.8,
+          "stroke-opacity": 1,
+          "name": "Indonesia Emissions",
+          "id": "indonesia_emissions",
+          "childId": [],
+          "rootId":"globalWarming",
+          "parentId": "globalWarming",
+          "headline": "Indonesia is one of the highest emitting countries in the world, responsible for 4.8% of global emissions.  Within Indonesia, 65.5% of emissions come from land-use change and forestry, 22.6% come from energy, 7.4% come from agriculture, 3% come from waste, and 1.4% come from industrial processes.",
+          "type": "emissions",
+          "products": "[]",
+          "weight": 0.048
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              90,
+              75.40885422846455
+            ],
+            [
+              116.01562499999999,
+              2.4601811810210052
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 0.8,
+          "stroke-opacity": 1,
+          "name": "Russia Emissions",
+          "id": "russia_emissions",
+          "childId": [],
+          "rootId":"globalWarming",
+          "parentId": "globalWarming",
+          "headline": "Russia is one of the highest emitting country in the world, responsible for 4.5% of global emissions.  Within Russia, 80% of emissions come from the energy sector, 11% come from industrial processes, 5.5% come from agriculture, and 3.5% come from waste management.",
+          "type": "emissions",
+          "products": "[]",
+          "weight": 0.045
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              28.125,
+              74.01954331150228
+            ],
+            [
+              37.265625,
+              54.77534585936447
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 1,
+          "stroke-opacity": 1,
+          "name": "New York City",
+          "id": "nyc_emissions",
+          "childId": [],
+          "rootId":"globalWarming",
+          "parentId": "usa_emissions",
+          "headline": "USA is the #1 emitting city in the USA, and #3 in the world.  Within NYC, 24% of emissions come from electricity, 25% come from gasoline, and 35% come from natural gas.",
+          "type": "emissions",
+          "products": "[]",
+          "weight": 0.14
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -73.45458984375,
+              44.174324837518895
+            ],
+            [
+              -73.95996093749999,
+              40.730608477796636
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 1,
+          "stroke-opacity": 1,
+          "name": "Chicago",
+          "id": "chicago_emissions",
+          "childId": [],
+          "rootId":"globalWarming",
+          "parentId": "usa_emissions",
+          "headline": "Chicago is the #3 emitting city in the USA, and #8 in the world.  Within Chicago, 27% of emissions come from residential buildings, 25% come from commercial and institutional buildings, 17% come from manufacturing industries and construction, 15% come from on-road transportation, 6% come from solid waste, 5% come from aviation, 3% come from offroad transportation, and 2% of emissions comes from railways, fugitive emissions from oil and natural gas systems, energy industries, biogas flare, wastewater, biological waste, and waterborne navigation.",
+          "type": "emissions",
+          "products": "[]",
+          "weight": 0.14
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -73.45458984375,
+              44.4808302785626
+            ],
+            [
+              -87.56103515625,
+              41.934976500546604
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 1,
+          "stroke-opacity": 1,
+          "name": "Los Angeles",
+          "id": "losangeles_emissions",
+          "childId": [],
+          "rootId":"globalWarming",
+          "parentId": "usa_emissions",
+          "headline": "Los Angeles is the #2 emitting city in the USA, and #5 in the world.  Within Los Angeles, 41% of emissions come from transportation, 24% come from industry, 9% come from electricity (generated in-state), 8% come from agriculture, 7% come from residential, 6% come from electricity (generated out-of-state), and 5% come from commercial.",
+          "type": "emissions",
+          "products": "[]",
+          "weight": 0.14
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -73.564453125,
+              44.18220395771566
+            ],
+            [
+              -118.30078125,
+              34.08906131584994
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 1,
+          "stroke-opacity": 1,
+          "name": "Guangzhou",
+          "id": "guangzhou_emissions",
+          "childId": [],
+          "rootId":"globalWarming",
+          "parentId": "china_emissions",
+          "headline": "Guangzhou is the #1 emitting city in China, and #2 in the world.",
+          "type": "emissions",
+          "products": "[]",
+          "weight": 0.14
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              113.25256347656249,
+              23.130257185291036
+            ],
+            [
+              88.1982421875,
+              41.343824581185686
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 1,
+          "stroke-opacity": 1,
+          "name": "Hong Kong",
+          "id": "hongkong_emissions",
+          "childId": [],
+          "rootId":"globalWarming",
+          "parentId": "china_emissions",
+          "headline": "Hong Kong is the #4 highest emitting city in the world..",
+          "type": "emissions",
+          "products": "[]",
+          "weight": 0.14
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              88.76953125,
+              40.78054143186033
+            ],
+            [
+              114.169921875,
+              22.30942584120019
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 1,
+          "stroke-opacity": 1,
+          "name": "Shanghai",
+          "id": "shanghai_emissions",
+          "childId": [],
+          "rootId":"globalWarming",
+          "parentId": "china_emissions",
+          "headline": "Shanghai is the #2 emitting city in China, and #6 in the world.",
+          "type": "emissions",
+          "products": "[]",
+          "weight": 0.14
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              88.1982421875,
+              41.47566020027821
+            ],
+            [
+              121.5087890625,
+              31.240985378021307
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 1,
+          "stroke-opacity": 1,
+          "name": "Industrial Bank of Korea",
+          "id": "IBK_adani_funding",
+          "childId": [],
+          "rootId":"adaniCoalMine",
+          "parentId": "adaniCoalMine",
+          "headline": "Based in South Korea, the Industrial Bank of Korea is one of the major remaining project funders/partners on the Adani Carmichael coal mine.  Two other project partners from South Korea - Samsung and Hanwha - publicly backed out of the project after learning about mine's environmental impact.",
+          "type": "financing",
+          "products": "[]",
+          "weight": 0.1
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              147.568359375,
+              -19.973348786110602
+            ],
+            [
+              126.968994140625,
+              37.58811876638322
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 2,
+          "stroke-opacity": 1,
+          "name": "Marsh Global",
+          "id": "marsh_adani_funding",
+          "childId": [],
+          "rootId":"adaniCoalMine",
+          "parentId": "adaniCoalMine",
+          "headline": "One of Adani's major project partners/funders is the insurer Marsh Global, which has decided (as of now) to continue supporting the project despite sustainability pledges.",
+          "type": "financing",
+          "products": "[]",
+          "weight": 0.25
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              148.88671874999997,
+              -20.46818922264095
+            ],
+            [
+              286.0304260253906,
+              40.7701418259051
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 3,
+          "stroke-opacity": 1,
+          "name": "Adani Group",
+          "id": "adani_adani_funding",
+          "childId": [],
+          "rootId":"adaniCoalMine",
+          "parentId": "adaniCoalMine",
+          "headline": "The Carmichael coal mine is being pushed forward by the Adani Group, led by CEO Gautam Adani",
+          "type": "financing",
+          "products": "[]",
+          "weight": 0.65
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              146.6015625,
+              -20.385825381874263
+            ],
+            [
+              72.57705688476562,
+              23.015284307019563
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 9,
+          "stroke-opacity": 1,
+          "fill": "#ff0000",
+          "fill-opacity": 0.5,
+          "name": "Yangtze River Pollution",
+          "id": "yangtzeRiver_plastic",
+          "childId": [],
+          "rootId":"oceanPollution",
+          "parentId": "oceanPollution",
+          "type": "natural",
+          "headline": "The Yangtze River, running East and West across China, accounts for almost 1/3rd of all plastic waste in the ocean.",
+          "CO2_impact": "0",
+          "CO2_trend": "red"
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -215.859375,
+              35.10193405724606
+            ],
+            [
+              -241.00708007812497,
+              32.24068253457369
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 2,
+          "stroke-opacity": 1,
+          "fill": "#ff0000",
+          "fill-opacity": 0.5,
+          "name": "Nile River Pollution",
+          "id": "nileRiver_plastic",
+          "childId": [],
+          "rootId":"oceanPollution",
+          "parentId": "oceanPollution",
+          "type": "natural",
+          "headline": "The Nile River, spilling out into the Mediterranean Sea, is the 4th-highest plastic polluting river in the world.",
+          "CO2_impact": "0",
+          "CO2_trend": "red"
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -215.33203125,
+              37.3002752813443
+            ],
+            [
+              -328.88671875,
+              30.751277776257812
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "stroke-width": 1.5,
+          "stroke-opacity": 1,
+          "fill": "#ff0000",
+          "fill-opacity": 0.5,
+          "name": "Amazon River Pollution",
+          "id": "amazonRiver_plastic",
+          "childId": [],
+          "rootId":"oceanPollution",
+          "parentId": "oceanPollution",
+          "type": "natural",
+          "headline": "The Amazon river is the 7th-highest polluting river in the world.",
+          "CO2_impact": "0",
+          "CO2_trend": "red"
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -214.8046875,
+              32.24997445586331
+            ],
+            [
+              -408.8671875,
+              1.0546279422758869
+            ]
+          ]
+        }
+      }
     ]
   };
 
