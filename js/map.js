@@ -14,15 +14,15 @@ var map = new mapboxgl.Map({
 });
 
 // Geocoder object
-var geocoder = new MapboxGeocoder({ // Initialize the geocoder
-  accessToken: mapboxgl.accessToken, // Set the access token
-  placeholder: 'Search anywhere',
-  mapboxgl: mapboxgl, // Set the mapbox-gl instance
-  marker: false, // Do not use the default marker style
-});
+// var geocoder = new MapboxGeocoder({ // Initialize the geocoder
+//   accessToken: mapboxgl.accessToken, // Set the access token
+//   placeholder: 'Search anywhere',
+//   mapboxgl: mapboxgl, // Set the mapbox-gl instance
+//   marker: false, // Do not use the default marker style
+// });
 
 // Add the geocoder to the map
-map.addControl(geocoder, 'top-left');
+// map.addControl(geocoder, 'top-left');
 
 // global variables for tracking the current hovered/selected edges and nodes
 // !!! I believe the _Num variables can be dropped if you force the non-_Num ones to use the string ID (instead of the mapbox generated one) !!!
@@ -38,10 +38,8 @@ let priorityAreas;
 let causeVectors;
 
 // Create Mapbox popup object
-let popup = new mapboxgl.Popup({
-  closeButton: false,
-  closeOnClick: false
-});
+let nodeName = document.getElementById("nodeName");
+let nodeDescription = document.getElementById("nodeDescription");
 
 map.on('load', function() {
   // Load the geojson data; currently local in this js file.
@@ -57,20 +55,20 @@ map.on('load', function() {
   // Listen for the `result` event from the Geocoder
   // `result` event is triggered when a user makes a selection
   //  Add a marker at the result's coordinates
-  geocoder.on('result', function(e) {
-    map.getSource('single-point').setData(e.result.geometry);
-
-    var acc = document.getElementsByClassName("categoryPanel");
-    var searchPrompts = document.getElementsByClassName("searchPrompt");
-    var subCategories = document.getElementsByClassName("subCategories");
-    var i;
-
-    for (i = 0; i < acc.length; i++) {
-      acc[i].classList.add('searched');
-      searchPrompts[i].setAttribute('style', 'display: none;');
-      subCategories[i].setAttribute('style', 'display: block;');
-    }
-  });
+  // geocoder.on('result', function(e) {
+  //   map.getSource('single-point').setData(e.result.geometry);
+  //
+  //   var acc = document.getElementsByClassName("categoryPanel");
+  //   var searchPrompts = document.getElementsByClassName("searchPrompt");
+  //   var subCategories = document.getElementsByClassName("subCategories");
+  //   var i;
+  //
+  //   for (i = 0; i < acc.length; i++) {
+  //     acc[i].classList.add('searched');
+  //     searchPrompts[i].setAttribute('style', 'display: none;');
+  //     subCategories[i].setAttribute('style', 'display: block;');
+  //   }
+  // });
 });
 
 // Fit the bounds of a node and its edges
@@ -311,6 +309,11 @@ function addPointLayer(layerId) {
   });
 }
 
+function resetNodeInfo() {
+  nodeName.innerHTML = "";
+  nodeDescription.innerHTML = "";
+}
+
 function createCauseVectorLayers() {
   causeVectors.features.forEach(function(feature) {
     let layerId = feature.properties.id;
@@ -332,38 +335,34 @@ function createCauseVectorLayers() {
 
     // create hover listener
     map.on("mousemove", layerId, function(e) {
+      map.getCanvas().style.cursor = "pointer";
       showChildren(layerId);
 
-      // Variables for popup
-      var coordinates = e.lngLat;
-      var name = e.features[0].properties.name;
-      var description = e.features[0].properties.headline;
-
-      // This helps prevent the popup box from overflowing outside the viewport
-      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-      }
-
-      // Populate the popup
-      popup
-        .setLngLat(coordinates)
-        .setHTML(`<h2>${name}</h2><p>${description}</p>`)
-        .addTo(map);
+      // Populate the info area
+      let name = e.features[0].properties.name;
+      let description = e.features[0].properties.headline;
+      nodeName.innerHTML = name;
+      nodeDescription.innerHTML = description;
     });
 
     // mouseleave listener
     map.on("mouseleave", layerId, function(e) {
-      popup.remove();
       if (!selectedCVid || selectedCVid != layerId) {
+        resetNodeInfo();
         hideChildren(layerId);
       }
     });
 
     // on click,
     map.on("click", layerId, function(e) {
-      popup.remove();
       showChildren(layerId);
       selectedCVid = e.features[0].properties.id;
+
+      // Populate the info area
+      let name = e.features[0].properties.name;
+      let description = e.features[0].properties.headline;
+      nodeName.innerHTML = name;
+      nodeDescription.innerHTML = description;
     })
   });
 }
@@ -412,7 +411,7 @@ function createPriorityAreaLayers() {
       // mapbox generated id
       hoveredPAidNum = e.features[0].id;
 
-      // if a PA is not selected, or if the hovered PA
+      // if a PA is not selected, or if target is the hovered PA
       if (!selectedPAid || hoveredPAid == selectedPAid) {
         // change to "select" cursor
         map.getCanvas().style.cursor = "pointer";
@@ -429,29 +428,19 @@ function createPriorityAreaLayers() {
         showChildren(layerId);
 
         // if a node is not active: populate popup box
-        // if (selectedPAidNum == null) {
-        //   var coordinates = e.lngLat;
-        //   var name = e.features[0].properties.name;
-        //   var description = e.features[0].properties.headline;
-        //
-        //   // This helps prevent the popup box from overflowing outside the viewport
-        //   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-        //     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-        //   }
-        //
-        //   // Populate the popup
-        //   popup
-        //     .setLngLat(coordinates)
-        //     .setHTML(`<h2>${name}</h2><p>${description}</p>`)
-        //     .addTo(map);
-        // }
+        if (selectedPAidNum == null) {
+          // Populate the info area
+          let name = e.features[0].properties.name;
+          let description = e.features[0].properties.headline;
+          nodeName.innerHTML = name;
+          nodeDescription.innerHTML = description;
+        }
       }
     });
 
     map.on("mouseleave", layerId, function(e) {
       // reset the cursor type
       map.getCanvas().style.cursor = '';
-      popup.remove();
       //
       if (hoveredPAidNum != selectedPAidNum) {
         // remove the hover styling
@@ -461,6 +450,8 @@ function createPriorityAreaLayers() {
           },
           { active: false }
         );
+        // reset info area
+        resetNodeInfo();
 
         // hide PA's Cause Vector children
         hideChildren(hoveredPAid);
@@ -483,7 +474,7 @@ function createPriorityAreaLayers() {
         selectedPAid = null;
       } else {
         if (selectedPAidNum >= 0) {
-          popup.remove();
+          resetNodeInfo();
           hideChildren(selectedPAid);
           map.setFeatureState({
               source: "priorityAreaSource",
@@ -494,6 +485,13 @@ function createPriorityAreaLayers() {
         }
         selectedPAid = e.features[0].properties.id;
         selectedPAidNum = e.features[0].id;
+
+        // Populate the info area
+        let name = e.features[0].properties.name;
+        let description = e.features[0].properties.headline;
+        nodeName.innerHTML = name;
+        nodeDescription.innerHTML = description;
+
         //zoomTo();
         showChildren(layerId);
         map.setFeatureState({
