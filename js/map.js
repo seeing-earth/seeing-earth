@@ -114,6 +114,14 @@ function getLayerProperties(layerId) {
 
 function createArcline(feature, start, end) {
   try {
+    let coords;
+    // if start is at the "left" edge of the map && end is at the "right" edge
+    if (start[0] < -160 && end[0] > 30 ) {
+      // then replace the end's longitude with (180 - end.longitude)
+      coords = [start, [-180 - (180 - end[0]), end[1]]]
+    } else {
+      coords = [start, end];
+    }
     let arcline = {
       "type": "FeatureCollection",
       "features": [
@@ -121,29 +129,39 @@ function createArcline(feature, start, end) {
           "type": "Feature",
           "geometry": {
             "type": "LineString",
-            "coordinates": [start, end]
+            "coordinates": coords
           }
         }
       ]
-    }
+    };
 
+    // create an arcline based on https://docs.mapbox.com/mapbox-gl-js/example/animate-point-along-route/
+    // Calculate the distance in kilometers between route start/end point.
     let lineDist = turf.lineDistance(arcline.features[0], "kilometers");
+
     let arc = [];
+
+    // Number of steps to use in the arc and animation, more steps means
+    // a smoother arc and animation, but too many steps will result in a
+    // low frame rate
+    // !! we aren't using an animation yet, but is something I'd like to incorporate !!
     let steps = 500;
 
+    // Draw an arc between the `origin` & `destination` of the two points
     for (var i = 0; i < lineDist; i += lineDist / steps) {
       let segment = turf.along(arcline.features[0], i, "kilometers");
       arc.push(segment.geometry.coordinates);
     }
 
+    // Update the route with calculated arc coordinates
     arcline.features[0].geometry.coordinates = arc;
 
+    // Source & layer name
     let sourceName = feature.properties.id + "_arcline";
     map.addSource(sourceName, {
       "type": "geojson",
       "data": arcline
     });
-
     map.addLayer({
       "id": sourceName,
       "source": sourceName,
@@ -180,11 +198,11 @@ function showChildren(parentId) {
             createArcline(feature, parentProperties.center, feature.properties.center);
             break;
           case "LineString":
-            console.log(feature.geometry.coordinates[0])
+            // first feature in linestrings (rivers) are the end/mouth of the river
             createArcline(feature, parentProperties.center, feature.geometry.coordinates[0]);
             break;
           case "Point":
-            createArcline(feature, parentProperties.center, feature.geometry.coordinates[0])
+            createArcline(feature, parentProperties.center, feature.geometry.coordinates);
             break;
         }
       }
@@ -286,8 +304,9 @@ function addPointLayer(layerId) {
       "visibility": "none"
     },
     "paint": {
-      "circle-radius": 6,
-      "circle-color": "black"
+      "circle-radius": 8,
+      "circle-color": "red",
+      "circle-opacity": 0.8
     }
   });
 }
@@ -311,6 +330,7 @@ function createCauseVectorLayers() {
         break;
     }
 
+    // create hover listener
     map.on("mousemove", layerId, function(e) {
       showChildren(layerId);
 
@@ -331,6 +351,7 @@ function createCauseVectorLayers() {
         .addTo(map);
     });
 
+    // mouseleave listener
     map.on("mouseleave", layerId, function(e) {
       popup.remove();
       if (!selectedCVid || selectedCVid != layerId) {
@@ -338,6 +359,7 @@ function createCauseVectorLayers() {
       }
     });
 
+    // on click,
     map.on("click", layerId, function(e) {
       popup.remove();
       showChildren(layerId);
@@ -787,7 +809,7 @@ function loadGeojsonSources() {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [[ -47.860768, -15.799044 ]]
+          "coordinates": [ -47.860768, -15.799044 ]
         }
       },
       // brazil exports to us
@@ -1072,7 +1094,7 @@ function loadGeojsonSources() {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [[ -122.336876, 47.622443 ]]
+          "coordinates": [ -122.336876, 47.622443 ]
         }
       },
       // brazil -> home depot
@@ -1094,7 +1116,7 @@ function loadGeojsonSources() {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [[ -74.707031, 34.016242 ]]
+          "coordinates": [ -74.707031, 34.016242 ]
         }
       },
       // brazil -> acme
@@ -1116,7 +1138,7 @@ function loadGeojsonSources() {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [[ -74.487305, 40.346544 ]]
+          "coordinates": [ -74.487305, 40.346544 ]
         }
       },
       // brazil -> shanghai corp
@@ -1138,7 +1160,7 @@ function loadGeojsonSources() {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [[ 121.640625, 31.128199 ]]
+          "coordinates": [ 121.640625, 31.128199 ]
         }
       },
       // brazil -> hong kong
@@ -1160,7 +1182,7 @@ function loadGeojsonSources() {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [[ 114.169922, 22.350076]]
+          "coordinates": [ 114.169922, 22.350076]
         }
       },
       // brazil -> jiangsu
@@ -1182,7 +1204,7 @@ function loadGeojsonSources() {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [[ 120.058594, 33.504759 ]]
+          "coordinates": [ 120.058594, 33.504759 ]
         }
       },
       // tampa bay, fl
@@ -1203,7 +1225,7 @@ function loadGeojsonSources() {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [[ -82.463379, 27.897349 ]]
+          "coordinates": [ -82.463379, 27.897349 ]
         }
       },
       // orlando
@@ -1224,7 +1246,7 @@ function loadGeojsonSources() {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [[ -81.375732, 28.526622 ]]
+          "coordinates": [ -81.375732, 28.526622 ]
         }
       },
       // detroit
@@ -1246,10 +1268,8 @@ function loadGeojsonSources() {
         "geometry": {
           "type": "Point",
           "coordinates": [
-            [
               -83.045654,
               42.350425
-            ]
           ]
         }
       },
@@ -1272,10 +1292,8 @@ function loadGeojsonSources() {
         "geometry": {
           "type": "Point",
           "coordinates": [
-            [
-              -84.49585,
-              42.734909
-            ]
+            -84.49585,
+            42.734909
           ]
         }
       },
@@ -1398,14 +1416,14 @@ function loadGeojsonSources() {
           "childId": [],
           "rootId":"globalWarming",
           "parentId": "usa_emissions",
-          "headline": "USA is the #1 emitting city in the USA, and #3 in the world.  Within NYC, 24% of emissions come from electricity, 25% come from gasoline, and 35% come from natural gas.",
+          "headline": "NYC is the #1 emitting city in the USA, and #3 in the world.  Within NYC, 24% of emissions come from electricity, 25% come from gasoline, and 35% come from natural gas.",
           "type": "emissions",
           "products": "[]",
           "weight": 0.14
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [[ -73.959961, 40.730608 ]]
+          "coordinates": [ -73.959961, 40.730608 ]
         }
       },
       // chicago emissions
@@ -1428,10 +1446,8 @@ function loadGeojsonSources() {
         "geometry": {
           "type": "Point",
           "coordinates": [
-            [
-              -87.561035,
-              41.934977
-            ]
+            -87.561035,
+            41.934977
           ]
         }
       },
@@ -1454,12 +1470,7 @@ function loadGeojsonSources() {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [
-            [
-              -118.300781,
-              34.089061
-            ]
-          ]
+          "coordinates": [-118.300781, 34.089061]
         }
       },
       // Guangzhou emissions
@@ -1481,12 +1492,7 @@ function loadGeojsonSources() {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [
-            [
-              88.198242,
-              41.343825
-            ]
-          ]
+          "coordinates": [88.198242, 41.343825]
         }
       },
       // hong kong emissions
@@ -1508,12 +1514,7 @@ function loadGeojsonSources() {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [
-            [
-              114.169921875,
-              22.30942584120019
-            ]
-          ]
+          "coordinates": [114.169922, 22.309426]
         }
       },
       // Shanghai emissions
@@ -1535,12 +1536,7 @@ function loadGeojsonSources() {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [
-            [
-              121.508789,
-              31.240985
-            ]
-          ]
+          "coordinates": [121.508789, 31.240985]
         }
       },
       // bank of korea - adani coal mine
@@ -1562,12 +1558,7 @@ function loadGeojsonSources() {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [
-            [
-              126.968994,
-              37.588119
-            ]
-          ]
+          "coordinates": [126.968994, 37.588119]
         }
       },
       // Marsh global - adani coal mine
@@ -1589,12 +1580,7 @@ function loadGeojsonSources() {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [
-            [
-              286.030426,
-              40.770142
-            ]
-          ]
+          "coordinates": [286.030426, 40.770142]
         }
       },
       // adani group
@@ -1616,12 +1602,7 @@ function loadGeojsonSources() {
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [
-            [
-              72.577057,
-              23.015284
-            ]
-          ]
+          "coordinates": [72.577057, 23.015284]
         }
       },
       // Yangtze river - GPGP

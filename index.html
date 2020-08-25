@@ -3,376 +3,369 @@
 <head>
   <meta charset='utf-8' />
   <title>Home - A Better World</title>
-  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'/>
   <script src='https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js'></script>
-  <link href='https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css' rel='stylesheet' />
+  <link href='https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css' rel='stylesheet'/>
   <link href='style.css' rel='stylesheet' type="text/css"/>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300" rel="stylesheet" type="text/css">
   <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.min.js'></script>
-<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.css' type='text/css' />
+  <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.css' type='text/css'/>
 </head>
 
 <body>
-  <div id='map'>
-  </div>
-  <div id="logoContainer">
-     <img id="logo" src="./assets/home-logo.png"><h1 id="header">home</h1>
-   </div>
+  <div id="sideBar">
+      <div id="logoContainer">
+        <img id="logo" src="./assets/home-logo.png"><h1 id="header">home</h1>
+      </div>
+      <nav id="controller">
+        <section id="menu">
+          <a class="tab active" href="#act" id="actTab">Act</a>
+          <a class="tab" href="#chat" id="chatTab">Chat</a>
+          <a class="tab" href="#board" id="devTab">Dev</a>
+        </section>
+        <section id="actSection">
 
-   <nav id="controller">
-     <section id="menu">
-         <a class="tab active" href="#act" id="actTab">Act</a>
-         <a class="tab" href="#chat" id="chatTab">Chat</a>
-         <a class="tab" href="#board" id="devTab">Dev</a>
-     </section>
-     <section id="actSection">
+          <ul class="top-level">
 
-       <ul class="top-level">
+            <details>
+              <summary>
+                <img class="itemIcon" src="/assets/flame.png" /> Top Priorities
+              </summary>
 
-         <details>
-           <summary>
-             <img class="itemIcon" src="/assets/flame.png" /> Top Priorities
-           </summary>
+              <ul class="2nd-level">
+                <details>
+                  <summary>Amazon Rainforest</summary>
+                  <p><strong>Spread the word via email, text, or FB</strong></p>
+                  <p>Intro Text This is how we have to fix this etc.</p>
+                  <p>Intro Text This is how we have to fix this etc.</p>
+                  <p>Intro Text This is how we have to fix this etc.</p>
+                  <p>Intro Text This is how we have to fix this etc.</p>
+                </details>
 
-           <ul class="2nd-level">
-           <details>
-             <summary>Amazon Rainforest</summary>
-             <p><strong>Spread the word via email, text, or FB</strong></p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
+                <details>
+                  <summary>Methane Emissions</summary>
+                  <p>Spread the word via email, text, or FB</p>
+                  <p>Intro Text This is how we have to fix this etc.</p>
+                  <p>Intro Text This is how we have to fix this etc.</p>
+                  <p>Intro Text This is how we have to fix this etc.</p>
+                </details>
+              </ul>
+            </details>
 
-           <details>
-             <summary>Methane Emissions</summary>
-             <p>Spread the word via email, text, or FB</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
-         </ul>
-         </details>
+            <details>
+              <summary>
+                <img class="itemIcon" src="/assets/team.png" /> GHG Reductions
+              </summary>
 
-         <details>
-           <summary>
-             <img class="itemIcon" src="/assets/team.png" /> GHG Reductions
-           </summary>
+              <p><em>Under Construction</em></p>
 
-           <p><em>Under Construction</em></p>
+              <!-- <ul class="2nd-level">
+              <details>
+              <summary>Restorative Justice System</summary>
+              <p><strong>Spread the word via email, text, or FB</strong></p>
+              <p>Intro Text This is how we have to fix this etc.</p>
+              <p>Intro Text This is how we have to fix this etc.</p>
+              <p>Intro Text This is how we have to fix this etc.</p>
+              <p>Intro Text This is how we have to fix this etc.</p>
+            </details>
 
-           <!-- <ul class="2nd-level">
-           <details>
-             <summary>Restorative Justice System</summary>
-             <p><strong>Spread the word via email, text, or FB</strong></p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
+            <details>
+            <summary>Reduce Meat Consumption</summary>
+            <p>Spread the word via email, text, or FB</p>
+            <p>Intro Text This is how we have to fix this etc.</p>
+            <p>Intro Text This is how we have to fix this etc.</p>
+            <p>Intro Text This is how we have to fix this etc.</p>
+          </details>
+        </ul> -->
 
-           <details>
-             <summary>Reduce Meat Consumption</summary>
-             <p>Spread the word via email, text, or FB</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
-         </ul> -->
+      </details>
 
-         </details>
+      <details>
+        <summary>
+          <img class="itemIcon" src="/assets/agriculture.png" /> Conservation
+        </summary>
 
-         <details>
-           <summary>
-             <img class="itemIcon" src="/assets/agriculture.png" /> Conservation
-           </summary>
+        <p><em>Under Construction</em></p>
 
-           <p><em>Under Construction</em></p>
+        <p>1. <p>Display <a href="https://www.arcgis.com/home/item.html?id=60d4c74d0dc04e8384ddb0d1320ebe21">NatureServe's endangered species map</a>, paired with:</p>
+        <p>a. <a href="https://monarchwatch.org/waystations/index.html#registry">Monarch Waystation Registry</a></p>
+        <p>b. <a href="https://www.audubon.org/about/audubon-near-you">Audubon Near You</a></p>
+        <p>a. <a href="http://millionpollinatorgardens.org/">Monarch Waystation Registry</a></p>
 
-           <p>1. <p>Display <a href="https://www.arcgis.com/home/item.html?id=60d4c74d0dc04e8384ddb0d1320ebe21">NatureServe's endangered species map</a>, paired with:</p>
-           <p>a. <a href="https://monarchwatch.org/waystations/index.html#registry">Monarch Waystation Registry</a></p>
-           <p>b. <a href="https://www.audubon.org/about/audubon-near-you">Audubon Near You</a></p>
-           <p>a. <a href="http://millionpollinatorgardens.org/">Monarch Waystation Registry</a></p>
+        <p>So you can map the highest-priority problem areas, as well as the nearest conservation experts in those areas, and enable people to reach those experts and increase conservation</p>
+        <p>A global version would be good as well.  Perhaps Map of Life?  And/or pairing Crowther Labs with local reforestation experts.</p>
 
-           <p>So you can map the highest-priority problem areas, as well as the nearest conservation experts in those areas, and enable people to reach those experts and increase conservation</p>
-           <p>A global version would be good as well.  Perhaps Map of Life?  And/or pairing Crowther Labs with local reforestation experts.</p>
+        <!-- <ul class="2nd-level">
+        <details>
+        <summary>Restorative Justice System</summary>
+        <p><strong>Spread the word via email, text, or FB</strong></p>
+        <p>Intro Text This is how we have to fix this etc.</p>
+        <p>Intro Text This is how we have to fix this etc.</p>
+        <p>Intro Text This is how we have to fix this etc.</p>
+        <p>Intro Text This is how we have to fix this etc.</p>
+      </details>
 
-           <!-- <ul class="2nd-level">
-           <details>
-             <summary>Restorative Justice System</summary>
-             <p><strong>Spread the word via email, text, or FB</strong></p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
-
-           <details>
-             <summary>Reduce Meat Consumption</summary>
-             <p>Spread the word via email, text, or FB</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
-         </ul> -->
-         </details>
-
-         <details>
-           <summary>
-             <img class="itemIcon" src="/assets/agriculture.png" /> Food
-           </summary>
-
-           <p><em>Under Construction</em></p>
-
-           <!-- <ul class="2nd-level">
-           <details>
-             <summary>Restorative Justice System</summary>
-             <p><strong>Spread the word via email, text, or FB</strong></p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
-
-           <details>
-             <summary>Reduce Meat Consumption</summary>
-             <p>Spread the word via email, text, or FB</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
-         </ul> -->
-         </details>
-
-         <details>
-           <summary>
-             <img class="itemIcon" src="/assets/business.png" /> Voting
-           </summary>
-
-           <p><em>Under Construction</em></p>
-
-           <p>Render a map of voter registration / voter participation rates, so people can find where to focus get out the vote efforts (could be overlapped by highest-priority districts and states?)</p>
-           <!-- <ul class="2nd-level">
-           <details>
-             <summary>Restorative Justice System</summary>
-             <p><strong>Spread the word via email, text, or FB</strong></p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
-
-           <details>
-             <summary>Reduce Meat Consumption</summary>
-             <p>Spread the word via email, text, or FB</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
-         </ul> -->
-         </details>
-
-         <details>
-           <summary>
-             <img class="itemIcon" src="/assets/business.png" /> Transportation
-           </summary>
-
-           <p><em>Under Construction</em></p>
-
-           <!-- <ul class="2nd-level">
-           <details>
-             <summary>Restorative Justice System</summary>
-             <p><strong>Spread the word via email, text, or FB</strong></p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
-
-           <details>
-             <summary>Reduce Meat Consumption</summary>
-             <p>Spread the word via email, text, or FB</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
-         </ul> -->
-         </details>
-
-         <details>
-           <summary>
-             <img class="itemIcon" src="/assets/buildings.png" /> Housing
-           </summary>
-
-           <p><em>Under Construction</em></p>
-
-           <!-- <ul class="2nd-level">
-           <details>
-             <summary>Restorative Justice System</summary>
-             <p><strong>Spread the word via email, text, or FB</strong></p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
-
-           <details>
-             <summary>Reduce Meat Consumption</summary>
-             <p>Spread the word via email, text, or FB</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
-         </ul> -->
-         </details>
-
-         <details>
-           <summary>
-             <img class="itemIcon" src="/assets/curve.png" /> Goods
-           </summary>
-
-           <p><em>Under Construction</em></p>
-
-           <!-- <ul class="2nd-level">
-           <details>
-             <summary>Restorative Justice System</summary>
-             <p><strong>Spread the word via email, text, or FB</strong></p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
-
-           <details>
-             <summary>Reduce Meat Consumption</summary>
-             <p>Spread the word via email, text, or FB</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
-         </ul> -->
-         </details>
-
-         <details>
-           <summary>
-             <img class="itemIcon" src="/assets/buildings.png" /> Energy
-           </summary>
-
-           <p><em>Under Construction</em></p>
-
-           <!-- <ul class="2nd-level">
-           <details>
-             <summary>Restorative Justice System</summary>
-             <p><strong>Spread the word via email, text, or FB</strong></p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
-
-           <details>
-             <summary>Reduce Meat Consumption</summary>
-             <p>Spread the word via email, text, or FB</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-             <p>Intro Text This is how we have to fix this etc.</p>
-           </details>
-         </ul> -->
-         </details>
-
-       </ul>
-
-   </section>
-
-   <section id="chatSection" style="display: none;">
-     <iframe src="https://titanembeds.com/embed/726604157607477340?theme=DiscordDark" height="600" width="360" frameborder="0"></iframe>
-   </section>
-
-   <section id="devSection" style="display: none;">
-     <h4>Project Board + Priorities</h4>
-     <details><summary>General</summary>
-       <ul style="padding-left: 5px;">
-         <details><summary>1. Identify priorityAreas for demonstration version</summary></details>
-         <details><summary>2. Gather causeVector data for selected priorityAreas</summary></details>
-         <details><summary>3. Create geoJSON data for webmapp.</summary></details>
-       </ul>
-     </details>
-     <details><summary>Webmap Dev</summary>
-     <ul style="padding-left: 5px;">
-       <details><summary>1. Come up with way to make it easier to hover and click on the Cause Vectors.  Perhaps by making transparent duplicates that are wider.</summary></details>
-       <details><summary>2. When a Priority Area is selected, need to make other Priority Areas not hoverable.</summary></details>
-       <details><summary>3. When a Cause Vector is selected, hovering over a different Cause Vector will cause the second CV's children to not hide</summary></details>
-       <details><summary>4. fix zoomTo() function and use it when selecting a PA or CV</summary></details>
-       <details><summary>5. Get popup to avoid covering its feature's children</summary></details>
-     </ul>
+      <details>
+      <summary>Reduce Meat Consumption</summary>
+      <p>Spread the word via email, text, or FB</p>
+      <p>Intro Text This is how we have to fix this etc.</p>
+      <p>Intro Text This is how we have to fix this etc.</p>
+      <p>Intro Text This is how we have to fix this etc.</p>
     </details>
-   </section>
+  </ul> -->
+  </details>
 
- </nav>
- <script
-   src="https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js"
-   charset="utf-8"
- ></script>
-<script src='./js/map.js'></script>
-<script>
+  <details>
+    <summary>
+      <img class="itemIcon" src="/assets/agriculture.png" /> Food
+    </summary>
 
-// link to js: https://jsbin.com/defidih/edit?js,console,output
+    <p><em>Under Construction</em></p>
 
-var tabs = document.getElementsByClassName('tab');
+    <!-- <ul class="2nd-level">
+    <details>
+    <summary>Restorative Justice System</summary>
+    <p><strong>Spread the word via email, text, or FB</strong></p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+  </details>
 
-for(j = 0; j < tabs.length; j++) {
-  // attach event listener to all tabs
-  tabs[j].addEventListener('click', clickTab)
-}
+  <details>
+  <summary>Reduce Meat Consumption</summary>
+  <p>Spread the word via email, text, or FB</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  </details>
+  </ul> -->
+  </details>
 
-// event listener function
-function clickTab (e) {
+  <details>
+    <summary>
+      <img class="itemIcon" src="/assets/business.png" /> Voting
+    </summary>
 
-  var tabID = e.currentTarget.id
-  var chatSection = document.getElementById('chatSection');
-  var actSection = document.getElementById('actSection');
-  var devSection = document.getElementById('devSection');
-  // var pageID = tabID.replace('t','p')
+    <p><em>Under Construction</em></p>
 
-  console.log(tabID);
+    <p>Render a map of voter registration / voter participation rates, so people can find where to focus get out the vote efforts (could be overlapped by highest-priority districts and states?)</p>
+    <!-- <ul class="2nd-level">
+    <details>
+    <summary>Restorative Justice System</summary>
+    <p><strong>Spread the word via email, text, or FB</strong></p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+  </details>
 
-  for (i = 0; i < tabs.length; i++) {
-    // deactivate all tabs
-    tabs[i].classList.remove('active')
-  }
+  <details>
+  <summary>Reduce Meat Consumption</summary>
+  <p>Spread the word via email, text, or FB</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  </details>
+  </ul> -->
+  </details>
 
-  // activate current tab
-  e.currentTarget.classList.add('active')
+  <details>
+    <summary>
+      <img class="itemIcon" src="/assets/business.png" /> Transportation
+    </summary>
 
-  if (tabID === "chatTab") {
+    <p><em>Under Construction</em></p>
 
-    console.log('found chat')
+    <!-- <ul class="2nd-level">
+    <details>
+    <summary>Restorative Justice System</summary>
+    <p><strong>Spread the word via email, text, or FB</strong></p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+  </details>
 
-    chatSection.style.display = "block";
-    actSection.style.display = "none";
-    devSection.style.display = "none";
-  }
+  <details>
+  <summary>Reduce Meat Consumption</summary>
+  <p>Spread the word via email, text, or FB</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  </details>
+  </ul> -->
+  </details>
 
-  else if (tabID === "actTab") {
-    actSection.style.display = "block";
-    chatSection.style.display = "none";
-    devSection.style.display = "none";
-  }
+  <details>
+    <summary>
+      <img class="itemIcon" src="/assets/buildings.png" /> Housing
+    </summary>
 
-  else if (tabID === "devTab") {
-    devSection.style.display = "block";
-    chatSection.style.display = "none";
-    actSection.style.display = "none";
-  }
+    <p><em>Under Construction</em></p>
 
-  // show current page
-  // var currentPage = document.querySelector('#'+pageID)
-  // currentPage.classList.add('active')
+    <!-- <ul class="2nd-level">
+    <details>
+    <summary>Restorative Justice System</summary>
+    <p><strong>Spread the word via email, text, or FB</strong></p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+  </details>
 
-}
+  <details>
+  <summary>Reduce Meat Consumption</summary>
+  <p>Spread the word via email, text, or FB</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  </details>
+  </ul> -->
+  </details>
 
+  <details>
+    <summary>
+      <img class="itemIcon" src="/assets/curve.png" /> Goods
+    </summary>
 
-</script>
+    <p><em>Under Construction</em></p>
+
+    <!-- <ul class="2nd-level">
+    <details>
+    <summary>Restorative Justice System</summary>
+    <p><strong>Spread the word via email, text, or FB</strong></p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+  </details>
+
+  <details>
+  <summary>Reduce Meat Consumption</summary>
+  <p>Spread the word via email, text, or FB</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  </details>
+  </ul> -->
+  </details>
+
+  <details>
+    <summary>
+      <img class="itemIcon" src="/assets/buildings.png" /> Energy
+    </summary>
+
+    <p><em>Under Construction</em></p>
+
+    <!-- <ul class="2nd-level">
+    <details>
+    <summary>Restorative Justice System</summary>
+    <p><strong>Spread the word via email, text, or FB</strong></p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+    <p>Intro Text This is how we have to fix this etc.</p>
+  </details>
+
+  <details>
+  <summary>Reduce Meat Consumption</summary>
+  <p>Spread the word via email, text, or FB</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  <p>Intro Text This is how we have to fix this etc.</p>
+  </details>
+  </ul> -->
+  </details>
+
+  </ul>
+
+  </section>
+
+  <section id="chatSection" style="display: none;">
+    <iframe src="https://titanembeds.com/embed/726604157607477340?theme=DiscordDark" height="600" width="360" frameborder="0"></iframe>
+  </section>
+
+  <section id="devSection" style="display: none;">
+    <h4>Project Board + Priorities</h4>
+    <details><summary>General</summary>
+      <ul style="padding-left: 5px;">
+        <details><summary>1. Identify priorityAreas for demonstration version</summary></details>
+        <details><summary>2. Gather causeVector data for selected priorityAreas</summary></details>
+        <details><summary>3. Create geoJSON data for webmapp.</summary></details>
+      </ul>
+    </details>
+    <details><summary>Webmap Dev</summary>
+      <ul style="padding-left: 5px;">
+        <details><summary>1. Come up with way to make it easier to hover and click on the Cause Vectors.  Perhaps by making transparent duplicates that are wider.</summary></details>
+        <details><summary>2. When a Priority Area is selected, need to make other Priority Areas not hoverable.</summary></details>
+        <details><summary>3. When a Cause Vector is selected, hovering over a different Cause Vector will cause the second CV's children to not hide</summary></details>
+        <details><summary>4. fix zoomTo() function and use it when selecting a PA or CV</summary></details>
+        <details><summary>5. Get popup to avoid covering its feature's children</summary></details>
+      </ul>
+    </details>
+  </section>
+
+  </nav>
+  </div>
+  <div id="map"></div>
+  <script charset="utf-8"
+          src="https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js"
+  ></script>
+  <script src='./js/map.js'></script>
+  <script>
+    // this should get moved to seperate js file
+    // link to js: https://jsbin.com/defidih/edit?js,console,output
+    var tabs = document.getElementsByClassName('tab');
+
+    for(j = 0; j < tabs.length; j++) {
+      // attach event listener to all tabs
+      tabs[j].addEventListener('click', clickTab)
+    }
+
+    // event listener function
+    function clickTab (e) {
+      var tabID = e.currentTarget.id
+      var chatSection = document.getElementById('chatSection');
+      var actSection = document.getElementById('actSection');
+      var devSection = document.getElementById('devSection');
+
+      console.log(tabID);
+
+      for (i = 0; i < tabs.length; i++) {
+        // deactivate all tabs
+        tabs[i].classList.remove('active')
+      }
+
+      // activate current tab
+      e.currentTarget.classList.add('active')
+
+      if (tabID === "chatTab") {
+
+        console.log('found chat')
+
+        chatSection.style.display = "block";
+        actSection.style.display = "none";
+        devSection.style.display = "none";
+      }
+
+      else if (tabID === "actTab") {
+        actSection.style.display = "block";
+        chatSection.style.display = "none";
+        devSection.style.display = "none";
+      }
+
+      else if (tabID === "devTab") {
+        devSection.style.display = "block";
+        chatSection.style.display = "none";
+        actSection.style.display = "none";
+      }
+
+      // show current page
+      // var currentPage = document.querySelector('#'+pageID)
+      // currentPage.classList.add('active')
+    }
+  </script>
 
 </body>
 </html>
