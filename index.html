@@ -29,59 +29,5 @@
           src="https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js"
   ></script>
   <script src='./js/map.js'></script>
-  <script>
-    // this should get moved to seperate js file
-    // link to js: https://jsbin.com/defidih/edit?js,console,output
-    var tabs = document.getElementsByClassName('tab');
-
-    for(j = 0; j < tabs.length; j++) {
-      // attach event listener to all tabs
-      tabs[j].addEventListener('click', clickTab)
-    }
-
-    // event listener function
-    function clickTab (e) {
-      var tabID = e.currentTarget.id
-      var chatSection = document.getElementById('chatSection');
-      var actSection = document.getElementById('actSection');
-      var devSection = document.getElementById('devSection');
-
-      console.log(tabID);
-
-      for (i = 0; i < tabs.length; i++) {
-        // deactivate all tabs
-        tabs[i].classList.remove('active')
-      }
-
-      // activate current tab
-      e.currentTarget.classList.add('active')
-
-      if (tabID === "chatTab") {
-
-        console.log('found chat')
-
-        chatSection.style.display = "block";
-        actSection.style.display = "none";
-        devSection.style.display = "none";
-      }
-
-      else if (tabID === "actTab") {
-        actSection.style.display = "block";
-        chatSection.style.display = "none";
-        devSection.style.display = "none";
-      }
-
-      else if (tabID === "devTab") {
-        devSection.style.display = "block";
-        chatSection.style.display = "none";
-        actSection.style.display = "none";
-      }
-
-      // show current page
-      // var currentPage = document.querySelector('#'+pageID)
-      // currentPage.classList.add('active')
-    }
-  </script>
-
 </body>
 </html>

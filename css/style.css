@@ -10,19 +10,22 @@ html, body {
 #map {
 	position: absolute;
 	top: 0;
-  right: 0;
+  /* right: 0; */
+  left: 0;
 	height: 100vh;
 	width: 80vw;
 }
 
 #sideBar {
-  display: flex;
+  /* display: flex; */
+  display: block;
   flex-direction: column;
   position: absolute;
   align-items: center;
   justify-content: space-between;
   top: 0;
-  left: 0;
+  /* left: 0 */
+  right: 0;
   height: 100vh;
   width: 20vw;
 }
@@ -58,8 +61,14 @@ html, body {
   text-align: center;
 }
 
+#nodeName {
+  text-align: center;
+}
+
 .info {
-  font-size: 1.3vh;
+  /* font-size: 1.3vh; */
+  font-size: 14px;
+  padding: 0px 20px 0px 10px;
 }
 
 ul {
