@@ -54,29 +54,12 @@ html, body {
   padding: 0px 3px;
 }
 
-nav#controller {
-  position: relative;
-  width: 100%;
-  height: 360px;
-  background: rgba(240, 240, 240);
-  overflow: auto;
-  margin: 10px;
+#nodeName {
+  text-align: center;
 }
 
 .info {
   font-size: 1.3vh;
-}
-
-/* #act {
-  padding-right: 10px;
-} */
-
-.mapboxgl-ctrl-geocoder {
-  margin-top: 70px !important;
-}
-
-.geocoderPanel > .mapboxgl-ctrl-geocoder {
-  margin-top: 0px !important;
 }
 
 ul {
