@@ -68,7 +68,28 @@ map.on('load', function() {
 
   // Create a layer and generate listener objects for each Cause Vector
   createCauseVectorLayers();
+
+  let count = listElement.childElementCount;
+  for (var i = 0; i < count; i++) {
+
+    let le = listElement.children[i];
+    let id = le.id;
+    le.addEventListener("click", function (e) {
+      // need to include selectedPAid logic here
+      if (selectedPAid) {
+        hideAllChildren();
+        selectedPAid = null;
+      } else {
+        showChildren(id);
+        selectedPAid = id;
+      }
+    });
+  }
 });
+
+// ###############
+// ## Functions ##
+// ###############
 
 // Fit the bounds of a node and its edges
 // #########################################################################
@@ -243,7 +264,9 @@ function hideChildren(parentId) {
 function hideAllChildren() {
   causeVectors.features.forEach(function(feature) {
     map.setLayoutProperty(feature.properties.id, "visibility", "none");
-    map.setLayoutProperty(feature.properties.id + "_arcline", "visibility", "none");
+    if (map.getLayer(feature.properties.id + "_arcline")) {
+      map.setLayoutProperty(feature.properties.id + "_arcline", "visibility", "none");
+    }
   });
 }
 
@@ -253,7 +276,9 @@ function hideOtherPriorityAreas(priorityAreaId) {
   priorityAreas.features.forEach(function(feature) {
     if (feature.properties.id != priorityAreaId) {
       map.setLayoutProperty(feature.properties.id, "visibility", "none");
-      map.setLayoutProperty(feature.properties.id + "Outline", "visibility", "none");
+      if (map.getLayer(feature.properties.id + "Outline")) {
+        map.setLayoutProperty(feature.properties.id + "Outline", "visibility", "visible");
+      }
     }
   });
 }
@@ -262,7 +287,9 @@ function hideOtherPriorityAreas(priorityAreaId) {
 function showPriorityAreas() {
   priorityAreas.features.forEach(function(feature) {
     map.setLayoutProperty(feature.properties.id, "visibility", "visible");
-    map.setLayoutProperty(feature.properties.id + "Outline", "visibility", "visible");
+    if (map.getLayer(feature.properties.id + "Outline")) {
+      map.setLayoutProperty(feature.properties.id + "Outline", "visibility", "visible");
+    }
   });
 }
 
@@ -369,18 +396,14 @@ function createCauseVectorLayers() {
       map.getCanvas().style.cursor = "pointer";
       showChildren(layerId);
 
-      // Populate the info area
-      let name = e.features[0].properties.name;
-      let description = e.features[0].properties.headline;
-      // TODO: replace this logic with expanding priority areas/cause vectors
-      nodeName.innerHTML = name;
-      nodeDescription.innerHTML = description;
+      // // Populate the info area
+      // let name = e.features[0].properties.name;
+      // let description = e.features[0].properties.headline;
     });
 
     // mouseleave listener
     map.on("mouseleave", layerId, function(e) {
       if (!selectedCVid || selectedCVid != layerId) {
-        resetNodeInfo();
         hideChildren(layerId);
       }
     });
@@ -390,12 +413,10 @@ function createCauseVectorLayers() {
       showChildren(layerId);
       selectedCVid = e.features[0].properties.id;
 
-      // Populate the info area
-      let name = e.features[0].properties.name;
-      let description = e.features[0].properties.headline;
-      // TODO: replace this logic with expanding priority areas/cause vectors
-      nodeName.innerHTML = name;
-      nodeDescription.innerHTML = description;
+      // // Populate the info area
+      // let name = e.features[0].properties.name;
+      // let description = e.features[0].properties.headline;
+
     })
   });
 }
@@ -409,6 +430,14 @@ function createPriorityAreaLayers() {
     // Populate the side bar info area with a list of the Priority Area names
     let listItem = document.createElement("li");
     listItem.innerHTML = feature.properties.name;
+    listItem.id = layerId;
+
+    // let nestedItems = document.createElement("ul");
+    // let descriptionText = document.createElement("li");
+    // descriptionText.innerHTML = feature.properties.headline;
+    // descriptionText.style.display = "none";
+    // nestedItems.appendChild(descriptionText);
+    // listItem.appendChild(nestedItems);
     listElement.appendChild(listItem);
 
     map.addLayer({
@@ -427,19 +456,24 @@ function createPriorityAreaLayers() {
       }
     });
 
+    // decided to only use an outline for adani coal mine
+    // TODO: when you extract this and the above add layer functionality to
+    //       addPolygonLayer(), you can pass another boolean param "outline"
     // Due to a technical limitation of WebGL, outlines cannot be rendered with a
     // width > 1, so a seperate outline layer is needed
-    map.addLayer({
-      "id": layerId + "Outline",
-      "type": "line",
-      "source": "priorityAreaSource",
-      "filter": ["==", "id", layerId],
-      "paint": {
-        "line-color": ["get", "CO2_trend"],
-        "line-width": ["get", "strokeWidth"],
-        "line-opacity": ["get", "stroke-opacity"]
-      }
-    });
+    if (layerId == "adaniCoalMine") {
+      map.addLayer({
+        "id": layerId + "Outline",
+        "type": "line",
+        "source": "priorityAreaSource",
+        "filter": ["==", "id", layerId],
+        "paint": {
+          "line-color": ["get", "CO2_trend"],
+          "line-width": ["get", "strokeWidth"],
+          "line-opacity": ["get", "stroke-opacity"]
+        }
+      });
+    }
 
     map.on("mousemove", layerId, function(e) {
       hoveredPAid = e.features[0].properties.id;
@@ -465,14 +499,12 @@ function createPriorityAreaLayers() {
         // display the PA's Cause Vector children
         showChildren(layerId);
 
+
         // if a node is not active: populate popup box
         if (selectedPAidNum == null) {
           // Populate the info area
-          let name = e.features[0].properties.name;
-          let description = e.features[0].properties.headline;
-          // TODO: replace this logic with expanding priority areas/cause vectors
-          nodeName.innerHTML = name;
-          nodeDescription.innerHTML = description;
+          //let name = e.features[0].properties.name;
+          //let description = e.features[0].properties.headline;
         }
       }
     });
@@ -489,8 +521,6 @@ function createPriorityAreaLayers() {
           },
           { active: false }
         );
-        // reset info area
-        resetNodeInfo();
 
         // hide PA's Cause Vector children
         hideChildren(hoveredPAid);
@@ -524,13 +554,6 @@ function createPriorityAreaLayers() {
         }
         selectedPAid = e.features[0].properties.id;
         selectedPAidNum = e.features[0].id;
-
-        // Populate the info area
-        let name = e.features[0].properties.name;
-        let description = e.features[0].properties.headline;
-        // TODO: replace this logic with expanding priority areas/cause vectors
-        nodeName.innerHTML = name;
-        nodeDescription.innerHTML = description;
 
         //zoomTo();
         showChildren(layerId);
@@ -566,7 +589,7 @@ function loadGeojsonSources() {
     "type": "FeatureCollection",
     "name": "priorityAreas",
     "features": [
-      {
+      { // Amazon Rainforest
         "type": "Feature",
         "properties": {
           "stroke": "#ff0000",
@@ -585,7 +608,7 @@ function loadGeojsonSources() {
       },
       "geometry": {
         "type": "Polygon", "coordinates": [ [ [ -64.599609375, -15.28418511407642 ], [ -44.560546875, -2.635788574166607 ], [ -45.615234375, -1.933226826477111 ], [ -47.98828125, -0.439448816413964 ], [ -50.361328125, -0.703107352436478 ], [ -52.294921875, -1.669685500986571 ], [ -50.009765625, 1.142502403706165 ], [ -50.88867187499999, 2.81137119333114 ], [ -52.55859375, 5.00339434502215 ], [ -54.404296875, 6.140554782450308 ], [ -56.25, 5.528510525692801 ], [ -58.359375, 6.926426847059551 ], [ -60.1171875, 8.320212289522944 ], [ -61.69921875, 9.535748998133627 ], [ -63.6328125, 10.31491928581316 ], [ -67.763671875, 10.228437266155943 ], [ -71.630859375, 5.878332109674327 ], [ -79.189453125, -2.02106511876699 ], [ -78.662109375, -4.214943141390639 ], [ -73.828125, -13.068776734357694 ], [ -64.599609375, -15.28418511407642 ] ] ] } },
-      {
+      { // US Election
         "type": "Feature",
         "properties": {
           "stroke": "#ff0000",
@@ -604,205 +627,206 @@ function loadGeojsonSources() {
         },
         "geometry": us_border,
       },
-    {
-      "type": "Feature",
-      "properties": {
-        "stroke": "#555555",
-        "strokeWidth": 2,
-        "stroke-opacity": 1,
-        "fill": "#555555",
-        "fill-opacity": 0.5,
-        "name": "Global Warming",
-        "id": "globalWarming",
-        "headline": "Global Warming is primarily driven by greenhouse gas (GHG) emissions since the Industrial Revolution.  Increasing temperatures affect ecosystems and natural systems around the world, including the ability for our oceans to support marine life, the ability for our forests to support biodiversity, and the ability for weather patterns (such as ocean currents and seasonal trends) to keep natural systems in balance.  As natural systems lose their ability to support marine life and forest life, they also lose the ability to support human life.  And as these ecosystems degrade, they start realising more GHG emissions than they sequester, which will acceleratethe loop of atmospheric warming, environmental degradation, and risks for all life on Earth. ",
-        "type": "natural",
-        "CO2_impact": "-1,100,000,000",
-        "CO2_trend": "red",
-        "center": [ -39.679120, 77.603939 ],
-        "childId": ["usa_emissions", "china_emissions", "indonesia_emissions", "india_emissions", "russia_emissions"]
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
+      { // Global Warming
+        "type": "Feature",
+        "properties": {
+          "stroke": "#555555",
+          "strokeWidth": 2,
+          "stroke-opacity": 1,
+          "fill": "#555555",
+          "fill-opacity": 0.5,
+          "name": "Global Warming",
+          "id": "globalWarming",
+          "headline": "Global Warming is primarily driven by greenhouse gas (GHG) emissions since the Industrial Revolution.  Increasing temperatures affect ecosystems and natural systems around the world, including the ability for our oceans to support marine life, the ability for our forests to support biodiversity, and the ability for weather patterns (such as ocean currents and seasonal trends) to keep natural systems in balance.  As natural systems lose their ability to support marine life and forest life, they also lose the ability to support human life.  And as these ecosystems degrade, they start realising more GHG emissions than they sequester, which will acceleratethe loop of atmospheric warming, environmental degradation, and risks for all life on Earth. ",
+          "type": "natural",
+          "CO2_impact": "-1,100,000,000",
+          "CO2_trend": "red",
+          "center": [ -39.679120, 77.603939 ],
+          "childId": ["usa_emissions", "china_emissions", "indonesia_emissions", "india_emissions", "russia_emissions"]
+        },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
             [
-              -159.2578125,
-              77.61770905279676
-            ],
-            [
-              -132.890625,
-              75.58493740869223
-            ],
-            [
-              -105.8203125,
-              74.77584300649235
-            ],
-            [
-              -62.57812500000001,
-              74.68325030051861
-            ],
-            [
-              -20.7421875,
-              74.21198251594369
-            ],
-            [
-              15.1171875,
-              74.68325030051861
-            ],
-            [
-              52.734375,
-              74.95939165894974
-            ],
-            [
-              92.10937499999999,
-              76.10079606754579
-            ],
-            [
-              102.65625,
-              77.38950400539731
-            ],
-            [
-              64.3359375,
-              80.92842569282253
-            ],
-            [
-              23.203125,
-              81.72318761821155
-            ],
-            [
-              -23.203125,
-              82.07002819448267
-            ],
-            [
-              -56.953125,
-              82.26169873683153
-            ],
-            [
-              -106.171875,
-              82.1664460084773
-            ],
-            [
-              -134.6484375,
-              81.46626086056541
-            ],
-            [
-              -161.015625,
-              80.05804956215623
-            ],
-            [
-              -175.078125,
-              78.63000556774836
-            ],
-            [
-              -159.2578125,
-              77.61770905279676
+              [
+                -159.2578125,
+                77.61770905279676
+              ],
+              [
+                -132.890625,
+                75.58493740869223
+              ],
+              [
+                -105.8203125,
+                74.77584300649235
+              ],
+              [
+                -62.57812500000001,
+                74.68325030051861
+              ],
+              [
+                -20.7421875,
+                74.21198251594369
+              ],
+              [
+                15.1171875,
+                74.68325030051861
+              ],
+              [
+                52.734375,
+                74.95939165894974
+              ],
+              [
+                92.10937499999999,
+                76.10079606754579
+              ],
+              [
+                102.65625,
+                77.38950400539731
+              ],
+              [
+                64.3359375,
+                80.92842569282253
+              ],
+              [
+                23.203125,
+                81.72318761821155
+              ],
+              [
+                -23.203125,
+                82.07002819448267
+              ],
+              [
+                -56.953125,
+                82.26169873683153
+              ],
+              [
+                -106.171875,
+                82.1664460084773
+              ],
+              [
+                -134.6484375,
+                81.46626086056541
+              ],
+              [
+                -161.015625,
+                80.05804956215623
+              ],
+              [
+                -175.078125,
+                78.63000556774836
+              ],
+              [
+                -159.2578125,
+                77.61770905279676
+              ]
             ]
           ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "stroke": "#ff0000",
-        "strokeWidth": 2,
-        "stroke-opacity": 1,
-        "fill": "orange",
-        "fill-opacity": 0.5,
-        "name": "Adani Carmichael Coal Mine",
-        "id": "adaniCoalMine",
-        "headline": "The Adani Group is currently pursuing development of an international coal mine, planned to sit between the Galilee Basin and the Great Barrier Reef.  If built, this project will destroy the ancestral lands of Indigenous people, threaten 270 billion liters of Queensland groundwater, add 4.6 billion tons of CO2 to the atmosphere over the next 60 years, and pave the way for at least 8 more coal mines in the Galille Basin.  Many insurers, contractors, and project partners have stepped away from the project because of these problems -- but several corporate entities are still involved in the project, includin Marsh (insurer), Hanwha, and the Industrial Bank of Korea. www.stopadani.com is leading an effort to call on all partners and facilitators to reject this project, and other fossil fuel projects in the future.",
-        "type": "fossilFuelProject",
-        "CO2_impact": "-1,100,000,000",
-        "CO2_trend": "red",
-        "center": [ 147.851235, -20.755888 ],
-        "childId": ["IBK_adani_funding", "marsh_adani_funding", "adani_adani_funding"]
+        }
       },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
+      { // adani coal mine
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "strokeWidth": 2,
+          "stroke-opacity": 1,
+          "fill": "orange",
+          "fill-opacity": 0.5,
+          "name": "Adani Carmichael Coal Mine",
+          "id": "adaniCoalMine",
+          "headline": "The Adani Group is currently pursuing development of an international coal mine, planned to sit between the Galilee Basin and the Great Barrier Reef.  If built, this project will destroy the ancestral lands of Indigenous people, threaten 270 billion liters of Queensland groundwater, add 4.6 billion tons of CO2 to the atmosphere over the next 60 years, and pave the way for at least 8 more coal mines in the Galille Basin.  Many insurers, contractors, and project partners have stepped away from the project because of these problems -- but several corporate entities are still involved in the project, includin Marsh (insurer), Hanwha, and the Industrial Bank of Korea. www.stopadani.com is leading an effort to call on all partners and facilitators to reject this project, and other fossil fuel projects in the future.",
+          "type": "fossilFuelProject",
+          "CO2_impact": "-1,100,000,000",
+          "CO2_trend": "red",
+          "center": [ 147.851235, -20.755888 ],
+          "childId": ["IBK_adani_funding", "marsh_adani_funding", "adani_adani_funding"]
+        },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
             [
-              146.0302734375,
-              -21.27913739410871
-            ],
-            [
-              149.161376953125,
-              -21.135745255030592
-            ],
-            [
-              148.20556640625,
-              -20.014645445341355
-            ],
-            [
-              146.0302734375,
-              -21.27913739410871
+              [
+                146.0302734375,
+                -21.27913739410871
+              ],
+              [
+                149.161376953125,
+                -21.135745255030592
+              ],
+              [
+                148.20556640625,
+                -20.014645445341355
+              ],
+              [
+                146.0302734375,
+                -21.27913739410871
+              ]
             ]
           ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "stroke": "#ff0000",
-        "strokeWidth": 2,
-        "stroke-opacity": 1,
-        "fill": "orange",
-        "fill-opacity": 0.5,
-        "name": "Ocean Pollution",
-        "id": "oceanPollution",
-        "type": "plastic",
-        "headline": "Around the world, ocean pollution has collected in large patches in the every major ocean.  Most famous is the Great Pacfic Garbage Patch actually exists in two locations -- one patch off the coast of California, and another patch off the coast of Japan.  The majority of global plastic waste is exported to facilities in Southeast Asia.  However, these facilities are not equipped to deal with the volume of plastic they recieve.  As a result, about 2/3rds of ocean plastic comes from overburned rivers in Asia.  Other major sources include the Nile and Niger rivers in Africa, and the Amazon river in South America.",
-        "CO2_impact": "0",
-        "CO2_trend": "red",
-        "center": [ -175.478, 40.294268 ],
-        "childId": ["yangtzeRiver_plastic", "nileRiver_plastic", "amazonRiver_plastic"]
+        }
       },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
+      { // ocean pollution
+        "type": "Feature",
+        "properties": {
+          "stroke": "#ff0000",
+          "strokeWidth": 2,
+          "stroke-opacity": 1,
+          "fill": "orange",
+          "fill-opacity": 0.5,
+          "name": "Ocean Pollution",
+          "id": "oceanPollution",
+          "type": "plastic",
+          "headline": "Around the world, ocean pollution has collected in large patches in the every major ocean.  Most famous is the Great Pacfic Garbage Patch actually exists in two locations -- one patch off the coast of California, and another patch off the coast of Japan.  The majority of global plastic waste is exported to facilities in Southeast Asia.  However, these facilities are not equipped to deal with the volume of plastic they recieve.  As a result, about 2/3rds of ocean plastic comes from overburned rivers in Asia.  Other major sources include the Nile and Niger rivers in Africa, and the Amazon river in South America.",
+          "CO2_impact": "0",
+          "CO2_trend": "red",
+          "center": [ -175.478, 40.294268 ],
+          "childId": ["yangtzeRiver_plastic", "nileRiver_plastic", "amazonRiver_plastic"]
+        },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
             [
-              -214.98046875,
-              41.244772343082076
-            ],
-            [
-              -214.98046875,
-              30.90222470517144
-            ],
-            [
-              -206.54296875,
-              31.353636941500987
-            ],
-            [
-              -204.2578125,
-              38.95940879245423
-            ],
-            [
-              -138.515625,
-              40.3130432088809
-            ],
-            [
-              -135.35156249999997,
-              32.99023555965106
-            ],
-            [
-              -126.73828125,
-              33.7243396617476
-            ],
-            [
-              -127.61718749999999,
-              42.5530802889558
-            ],
-            [
-              -214.98046875,
-              41.244772343082076
+              [
+                -214.98046875,
+                41.244772343082076
+              ],
+              [
+                -214.98046875,
+                30.90222470517144
+              ],
+              [
+                -206.54296875,
+                31.353636941500987
+              ],
+              [
+                -204.2578125,
+                38.95940879245423
+              ],
+              [
+                -138.515625,
+                40.3130432088809
+              ],
+              [
+                -135.35156249999997,
+                32.99023555965106
+              ],
+              [
+                -126.73828125,
+                33.7243396617476
+              ],
+              [
+                -127.61718749999999,
+                42.5530802889558
+              ],
+              [
+                -214.98046875,
+                41.244772343082076
+              ]
             ]
           ]
-        ]
+        }
       }
-    }]
+    ]
   };
 
   causeVectors = {
