@@ -4,12 +4,11 @@
 //    - make them expand on click, update map, and display its info and children
 //  + instead of changing the info area heading and paragraph elements,
 //    need to expand the respective priority area or cause vector
-//  + on Cause Vector hover & click, increase other CV's opacity
+//  + when clicking on cause vectors that lie on top of a priority area, the
+//    priority area is hidden/deslected
 //  + optimize geojson -> 6-decimal precision (most are good now)
 //  + implement new zoomTo function -> create an extent field for each PA
-//    - calculate this in qgis for now
-//  + after the map loads, pre-calculate all of the arc lines for each feature
-//    - start with all first level arclines, then the rest
+//    - calculate this in qgis for now, can later be done with postgis or turf
 //  + test out transparent "buffer" for hovering arclines
 //    - tooltip vs info area
 //  + start building out the backend
@@ -17,8 +16,7 @@
 //    - move geojson data to external file store/db
 //    - optimize geojson; purge unnecessary fields
 //  + code cleanup
-//    - some global variables (line 33) are redundant
-//    - some later functions could use more comments
+//    - some global variables (line 33) are potentially redundant
 ////////////////////////////////////////////////////////////////////////////////
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYmdvYmxpcnNjaCIsImEiOiJjaXpuazEyZWowMzlkMzJvN3M3cThzN2ZkIn0.B0gMS_CvyKc_NHGmWejVqw';
@@ -30,12 +28,7 @@ var map = new mapboxgl.Map({
 });
 
 // global variables for tracking the current hovered/selected edges and nodes
-// !!! I believe the _Num variables can be dropped if you force the non-_Num ones to use the string ID (instead of the mapbox generated one) !!!
-let hoveredPAid = null;
-let hoveredPAidNum = null;
-let hoveredCVid = null;
 let selectedPAid = null;
-let selectedPAidNum = null;
 let selectedCVid = null;
 
 // global variables that will hold the geojson data
@@ -45,18 +38,6 @@ let causeVectors;
 // global variable for info area list element
 // TODO: move this and any other ui logic to seperate file
 let listElement = document.getElementById("infoList");
-
-// temp code
-// let nodeName = document.getElementById("nodeName");
-// let nodeDescription = document.getElementById("nodeDescription");
-// button1 = document.getElementById("amazonRainforest");
-// button2 = document.getElementById("usElection2020");
-// button1.addEventListener("click", function() {
-//   showChildren("amazonRainforest")
-// })
-// button2.addEventListener("click", function() {
-//   showChildren("usElection2020")
-// })
 
 map.on('load', function() {
   // Load the geojson data; currently local in this js file.
@@ -69,19 +50,45 @@ map.on('load', function() {
   // Create a layer and generate listener objects for each Cause Vector
   createCauseVectorLayers();
 
+  // Create the arcline layers
+  createArclineLayers();
+
+  // UI Code WIP
   let count = listElement.childElementCount;
   for (var i = 0; i < count; i++) {
 
     let le = listElement.children[i];
     let id = le.id;
-    le.addEventListener("click", function (e) {
-      // need to include selectedPAid logic here
-      if (selectedPAid) {
+    le.addEventListener("mouseenter", function(e) {
+      if (!selectedPAid) {
+        // hide all the other PAs
+        hideOtherPriorityAreas(e.target.id);
+        // display the PA's Cause Vector children
+        showChildren(e.target.id);
+      }
+    });
+
+    le.addEventListener("mouseleave", function() {
+      if (!selectedPAid) {
+        // hide PA's Cause Vector children
         hideAllChildren();
+        showPriorityAreas();
+      }
+    });
+
+    le.addEventListener("click", function (e) {
+      if (selectedPAid == e.target.id) {
+        hideAllChildren();
+        showPriorityAreas();
         selectedPAid = null;
       } else {
-        showChildren(id);
-        selectedPAid = id;
+        hideAllChildren();
+        showPriorityAreas();
+
+        hideOtherPriorityAreas(e.target.id);
+        showChildren(e.target.id);
+
+        selectedPAid = e.target.id;
       }
     });
   }
@@ -108,87 +115,10 @@ function zoomTo() {
   map.fitBounds(bounds, { padding: 40 })
 }
 
-// this function creates the arcs between features
-function createArcline(feature, start, end) {
-  try {
-    let coords;
-
-    // We need some logic here to handle an edge case. Picture a mercator map
-    // and imagine the start point is at the western edge of the map and the end
-    // point is at the eastern edge. By default mapbox will draw a line all the
-    // way across the map instead of taking the short route by jumping across
-    // the 180th meridian. Issue is discussed here:
-    // https://github.com/mapbox/mapbox-gl-js/issues/3250
-
-    // if the start is at the west edge and the end is at the east edge
-    if (start[0] < -160 && end[0] > 30 ) {
-      // then replace the end's longitude with (180 - end.longitude)
-      // this essentially pushes the point past 180 or (-180)
-      coords = [start, [-180 - (180 - end[0]), end[1]]]
-    } else {
-      coords = [start, end];
-    }
-
-    let arcline = {
-      "type": "FeatureCollection",
-      "features": [
-        {
-          "type": "Feature",
-          "geometry": {
-            "type": "LineString",
-            "coordinates": coords
-          }
-        }
-      ]
-    };
-
-    // Now create an arcline based on:
-    // https://docs.mapbox.com/mapbox-gl-js/example/animate-point-along-route/
-
-    // Calculate the distance in kilometers between route start/end point.
-    let lineDist = turf.lineDistance(arcline.features[0], "kilometers");
-
-    let arc = [];
-
-    // Number of steps to use in the arc and animation, more steps means
-    // a smoother arc and animation, but too many steps will result in a
-    // low frame rate
-    // !! we aren't using an animation yet, but is something I'd like to incorporate !!
-    let steps = 500;
-
-    // Draw an arc between the `origin` & `destination` of the two points
-    for (var i = 0; i < lineDist; i += lineDist / steps) {
-      let segment = turf.along(arcline.features[0], i, "kilometers");
-      arc.push(segment.geometry.coordinates);
-    }
-
-    // Update the route with calculated arc coordinates
-    arcline.features[0].geometry.coordinates = arc;
-
-    // Source & layer name
-    let sourceName = feature.properties.id + "_arcline";
-    map.addSource(sourceName, {
-      "type": "geojson",
-      "data": arcline
-    });
-    map.addLayer({
-      "id": sourceName,
-      "source": sourceName,
-      "type": "line",
-      "paint": {
-        "line-width": feature.properties.strokeWidth,
-        "line-color": "red"
-      }
-    });
-  } catch(error) {
-    console.error(feature.properties, error)
-  }
-}
-
 // This function unnecessarily loops through all features of the layer's source
 // this is due to the fact that breaks in js cannot be used within functions
-// nested in a loop. Must be some way around this but it's not too important yet
-// TODO: this is only used in showChildren(); try to deprecate this function
+// nested in a loop. Presently, it only gets run once on map load in
+// createArclineLayers() so not an issue presently
 function getLayerProperties(layerId) {
   let layer = map.getLayer(layerId);
   let result;
@@ -209,11 +139,8 @@ function getLayerProperties(layerId) {
 }
 
 // Unhide the children and arclines (create them if necessary) of the passed layer
-// TODO: create the all arclines after map load instead of trying to create
-//       and draw them at the same time
+// TODO: make outline layer ids consistent with _arcline naming convention
 function showChildren(parentId) {
-  // get the properties of the layer whose children we are showing
-  let parentProperties = getLayerProperties(parentId);
   // loop through each causeVector and unhide it if its parent id matches
   // additionally create or unhide the arcs to the children
   causeVectors.features.forEach(function(feature) {
@@ -223,24 +150,9 @@ function showChildren(parentId) {
       if (map.getLayer(feature.properties.id + "Outline")) {
         map.setLayoutProperty(feature.properties.id + "Outline", "visibility", "visible");
       }
-      // if arcline layer already exists, unhide it
+      // if arcline layer exists, unhide it
       if (map.getLayer(feature.properties.id + "_arcline")) {
         map.setLayoutProperty(feature.properties.id + "_arcline", "visibility", "visible");
-      } else { // else create and show the arcline layer
-        // TODO: make this its own function
-        switch(feature.geometry.type) {
-          case "MultiPolygon":
-          case "Polygon":
-            createArcline(feature, parentProperties.center, feature.properties.center);
-            break;
-          case "LineString":
-            // first feature in linestrings (rivers) are the end/mouth of the river
-            createArcline(feature, parentProperties.center, feature.geometry.coordinates[0]);
-            break;
-          case "Point":
-            createArcline(feature, parentProperties.center, feature.geometry.coordinates);
-            break;
-        }
       }
     }
   });
@@ -277,7 +189,7 @@ function hideOtherPriorityAreas(priorityAreaId) {
     if (feature.properties.id != priorityAreaId) {
       map.setLayoutProperty(feature.properties.id, "visibility", "none");
       if (map.getLayer(feature.properties.id + "Outline")) {
-        map.setLayoutProperty(feature.properties.id + "Outline", "visibility", "visible");
+        map.setLayoutProperty(feature.properties.id + "Outline", "visibility", "none");
       }
     }
   });
@@ -363,12 +275,6 @@ function addPointLayer(layerId) {
   });
 }
 
-// reset info area
-function resetNodeInfo() {
-  nodeName.innerHTML = "";
-  nodeDescription.innerHTML = "";
-}
-
 // Create a layer and generate listener objects for each Cause Vector
 function createCauseVectorLayers() {
   causeVectors.features.forEach(function(feature) {
@@ -392,13 +298,9 @@ function createCauseVectorLayers() {
     }
 
     // create hover listener
-    map.on("mousemove", layerId, function(e) {
+    map.on("mouseenter", layerId, function(e) {
       map.getCanvas().style.cursor = "pointer";
       showChildren(layerId);
-
-      // // Populate the info area
-      // let name = e.features[0].properties.name;
-      // let description = e.features[0].properties.headline;
     });
 
     // mouseleave listener
@@ -408,10 +310,17 @@ function createCauseVectorLayers() {
       }
     });
 
-    // on click,
+    // on click:
     map.on("click", layerId, function(e) {
-      showChildren(layerId);
-      selectedCVid = e.features[0].properties.id;
+      let targetId = e.features[0].properties.id;
+      if (selectedCVid === targetId) {
+        hideChildren(targetId);
+        selectedCVid = null;
+      } else {
+        showChildren(targetId);
+        selectedCVid = e.features[0].properties.id;
+      }
+
 
       // // Populate the info area
       // let name = e.features[0].properties.name;
@@ -450,8 +359,8 @@ function createPriorityAreaLayers() {
         "fill-opacity": [
           "case",
           ["boolean", ["feature-state", "active"], false],
-          0.8,
-          0.5
+          0.4,
+          0.8
         ]
       }
     });
@@ -475,96 +384,139 @@ function createPriorityAreaLayers() {
       });
     }
 
-    map.on("mousemove", layerId, function(e) {
-      hoveredPAid = e.features[0].properties.id;
+    map.on("mouseenter", layerId, function(e) {
+      // change to "select" cursor
+      map.getCanvas().style.cursor = "pointer";
       // hide all the other PAs
-      hideOtherPriorityAreas(hoveredPAid);
-
-      // mapbox generated id
-      hoveredPAidNum = e.features[0].id;
-
-      // if a PA is not selected, or if target is the hovered PA
-      if (!selectedPAid || hoveredPAid == selectedPAid) {
-        // change to "select" cursor
-        map.getCanvas().style.cursor = "pointer";
-
-        // darken the Priority Area
-        map.setFeatureState({
-            source: "priorityAreaSource",
-            id: hoveredPAidNum
-          },
-          { active: true }
-        );
-
-        // display the PA's Cause Vector children
-        showChildren(layerId);
-
-
-        // if a node is not active: populate popup box
-        if (selectedPAidNum == null) {
-          // Populate the info area
-          //let name = e.features[0].properties.name;
-          //let description = e.features[0].properties.headline;
-        }
-      }
+      hideOtherPriorityAreas(layerId);
+      // display the PA's Cause Vector children
+      showChildren(layerId);
     });
 
     map.on("mouseleave", layerId, function(e) {
       // reset the cursor type
       map.getCanvas().style.cursor = '';
       //
-      if (hoveredPAidNum != selectedPAidNum) {
-        // remove the hover styling
-        map.setFeatureState({
-            source: "priorityAreaSource",
-            id: hoveredPAidNum
-          },
-          { active: false }
-        );
-
+      if (!selectedPAid) {
         // hide PA's Cause Vector children
-        hideChildren(hoveredPAid);
+        hideChildren(layerId);
         showPriorityAreas();
       }
-      hoveredPAid = null;
     });
 
     map.on("click", layerId, function(e) {
-      if (selectedPAidNum == e.features[0].id) {
-        map.setFeatureState({
-          source: "priorityAreaSource",
-          id: selectedPAidNum
-          },
-          { active: false }
-        );
-        hideChildren(selectedPAidNum);
-        hideChildren(selectedCVid);
-        selectedPAidNum = null;
+      // If we clicked on the selected Priority Area
+      if (selectedPAid) {
+        hideAllChildren();
         selectedPAid = null;
       } else {
-        if (selectedPAidNum >= 0) {
-          resetNodeInfo();
-          hideChildren(selectedPAid);
-          map.setFeatureState({
-              source: "priorityAreaSource",
-              id: selectedPAidNum
-            },
-            { active: false }
-          );
-        }
         selectedPAid = e.features[0].properties.id;
-        selectedPAidNum = e.features[0].id;
-
         //zoomTo();
         showChildren(layerId);
-        map.setFeatureState({
-            source: "priorityAreaSource",
-            id: hoveredPAid
-          },
-          { active: true }
-        );
       }
     });
+  });
+}
+
+// this function creates the arcs between features
+function createArcline(feature, start, end) {
+  try {
+    let coords;
+
+    // We need some logic here to handle an edge case. Picture a mercator map
+    // and imagine the start point is at the western edge of the map and the end
+    // point is at the eastern edge. By default mapbox will draw a line all the
+    // way across the map instead of taking the short route by jumping across
+    // the 180th meridian. Issue is discussed here:
+    // https://github.com/mapbox/mapbox-gl-js/issues/3250
+
+    // if the start is at the west edge and the end is at the east edge
+    if (start[0] < -160 && end[0] > 30 ) {
+      // then replace the end's longitude with (180 - end.longitude)
+      // this essentially pushes the point past 180 or (-180)
+      coords = [start, [-180 - (180 - end[0]), end[1]]]
+    } else {
+      coords = [start, end];
+    }
+
+    let arcline = {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": coords
+          }
+        }
+      ]
+    };
+
+    // Now create an arcline based on:
+    // https://docs.mapbox.com/mapbox-gl-js/example/animate-point-along-route/
+
+    // Calculate the distance in kilometers between route start/end point.
+    let lineDist = turf.lineDistance(arcline.features[0], "kilometers");
+
+    let arc = [];
+
+    // Number of steps to use in the arc and animation, more steps means
+    // a smoother arc and animation, but too many steps will result in a
+    // low frame rate
+    // !! we aren't using an animation yet, but is something I'd like to incorporate !!
+    let steps = 500;
+
+    // Draw an arc between the `origin` & `destination` of the two points
+    for (var i = 0; i < lineDist; i += lineDist / steps) {
+      let segment = turf.along(arcline.features[0], i, "kilometers");
+      arc.push(segment.geometry.coordinates);
+    }
+
+    // Update the route with calculated arc coordinates
+    arcline.features[0].geometry.coordinates = arc;
+
+    // Source & layer name
+    let sourceName = feature.properties.id + "_arcline";
+    map.addSource(sourceName, {
+      "type": "geojson",
+      "data": arcline
+    });
+    map.addLayer({
+      "id": sourceName,
+      "source": sourceName,
+      "type": "line",
+      "layout": {
+        "visibility": "none"
+      },
+      "paint": {
+        "line-width": feature.properties.strokeWidth,
+        "line-color": "red"
+      }
+    });
+  } catch(error) {
+    console.error(feature.properties, error)
+  }
+}
+
+// Create the arcline connections for all cause vectors
+// this is called after the map is done loading
+function createArclineLayers() {
+  causeVectors.features.forEach(function(feature) {
+    let parentProperties = getLayerProperties(feature.properties.parentId);
+    // TODO: make this its own function
+    switch(feature.geometry.type) {
+      case "MultiPolygon":
+      case "Polygon":
+        createArcline(feature, parentProperties.center, feature.properties.center);
+        break;
+      case "LineString":
+        // first feature in linestrings (rivers) are the end/mouth of the river
+        createArcline(feature, parentProperties.center, feature.geometry.coordinates[0]);
+        break;
+      case "Point":
+        createArcline(feature, parentProperties.center, feature.geometry.coordinates);
+        break;
+    }
   });
 }
 
@@ -1746,12 +1698,12 @@ function loadGeojsonSources() {
   map.addSource("priorityAreaSource", {
     type: "geojson",
     data: priorityAreas,
-    generateId: true
+    generateId: false
   });
 
   map.addSource("causeVectorSource", {
     type: "geojson",
     data: causeVectors,
-    generateId: true
+    generateId: false
   });
 }

@@ -11,7 +11,7 @@ html, body {
 	position: absolute;
 	top: 0;
   /* right: 0; */
-  left: 0;
+  right: 0;
 	height: 100vh;
 	width: 75vw;
 }
@@ -25,9 +25,11 @@ html, body {
   justify-content: space-between;
   top: 0;
   /* left: 0 */
-  right: 0;
+  left: 0;
   height: 100vh;
   width: 25vw;
+  background: #414141;
+
 }
 
 #logoContainer {
@@ -40,6 +42,12 @@ html, body {
   padding-bottom: 5px;
   display: inline-flex;
   background: #C3E7DA;
+
+}
+
+#mapInfoContainer {
+  color: white;
+  margin: 10px;
 }
 
 #logo {
@@ -72,63 +80,31 @@ html, body {
 }
 
 ul {
-  padding-left: 10px;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
 
-ul.2nd-level {
-  padding-left: 20px;
-}
-
-details {
-  padding: 15px;
-}
-
-details[open] > summary {
-  background-color: rgba(59, 184, 211, 0.22);
-  font-weight: bold;
-  margin: 10px;
-  border-bottom: solid black 1px;
-}
-
-summary {
-  font-weight: initial;
-}
-
-details[open] > h1, h2, h3, h4, h5, h6, p {
-  padding-left: 10px;
-}
-
-.itemIcon {
-  margin-right: 2px;
-  width: 15px;
-}
-
-#menu {
-  display: fixed;
-  text-align: center;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-/* Style the links inside the pill navigation menu */
-#menu a {
-  display: inline-block;
-  color: black;
-  text-align: center;
-  padding: 3px 10px;
-  text-decoration: none;
-  font-size: 17px;
-  border-radius: 5px;
-}
-
-/* Change the color of links on mouse-over */
-#menu a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-/* Add a color to the active/current link */
-#menu a.active {
-  background-color: dodgerblue;
+li {
   color: white;
+  font: 200 20px/1.5 Helvetica, Verdana, sans-serif;
+  border-bottom: 1px solid #ccc;
+  text-decoration: none;
+
+  -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -o-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
+  transition: font-size 0.3s ease, background-color 0.3s ease;
+  display: block;
+}
+
+li:last-child {
+  border: none;
+}
+
+li:hover {
+  cursor: pointer;
+  font-size: 28px;
+  background: #646464;
 }
