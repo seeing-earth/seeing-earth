@@ -10,26 +10,21 @@ html, body {
 #map {
 	position: absolute;
 	top: 0;
-  /* right: 0; */
-  right: 0;
+  left: 0;
 	height: 100vh;
 	width: 75vw;
 }
 
 #sideBar {
-  /* display: flex; */
-  display: block;
+  display: flex;
   flex-direction: column;
   position: absolute;
   align-items: center;
-  justify-content: space-between;
   top: 0;
-  /* left: 0 */
-  left: 0;
+  right: 0;
   height: 100vh;
   width: 25vw;
   background: #414141;
-
 }
 
 #logoContainer {
@@ -42,12 +37,28 @@ html, body {
   padding-bottom: 5px;
   display: inline-flex;
   background: #C3E7DA;
-
 }
 
 #mapInfoContainer {
   color: white;
-  margin: 10px;
+  padding: 10px 2% 10px 2%;
+  align-self: flex-start;
+  overflow-y: auto;
+  width: 96%
+}
+
+#mapInfoContainer::-webkit-scrollbar {
+  width: 10px;
+}
+
+#mapInfoContainer::-webkit-scrollbar-track {
+  display: none;
+}
+
+#mapInfoContainer::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.5);
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
 }
 
 #logo {
@@ -65,14 +76,6 @@ html, body {
   padding: 0px 3px;
 }
 
-#nodeName {
-  text-align: center;
-}
-
-#nodeName {
-  text-align: center;
-}
-
 .info {
   /* font-size: 1.3vh; */
   font-size: 14px;
@@ -85,11 +88,12 @@ ul {
   padding: 0;
 }
 
-li {
+details {
   color: white;
-  font: 200 20px/1.5 Helvetica, Verdana, sans-serif;
-  border-bottom: 1px solid #ccc;
+  font: 200 14px Helvetica, Verdana, sans-serif;
+  border: 0;
   text-decoration: none;
+  padding: 5px;
 
   -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
   -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
@@ -99,12 +103,25 @@ li {
   display: block;
 }
 
-li:last-child {
-  border: none;
+summary:focus {
+  outline: none;
 }
 
-li:hover {
+summary {
+  font-size: 20px;
+}
+
+details.firstOrder {
+  margin-left: 18px;
+}
+
+summary:hover {
   cursor: pointer;
-  font-size: 28px;
   background: #646464;
+}
+
+p {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 23px;
 }
