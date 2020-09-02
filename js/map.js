@@ -623,7 +623,7 @@ function loadGeojsonSources() {
           "type": "natural",
           "center": [ -64.575853, -6.711117],
           "bbox": [[-176.907481, -15.799044], [134.192417, 72.576544]],
-          "headline": "The Amazon is one of the world's greatest carbon sinks and one of the world's most important homes of biodiversity.  In the late 20th Century, the Amazon would sequester about 2 billion tons of CO2 every year (almost half the USA's annual carbon footprint).  Due to deforestation, the Amazon now only sequesters approximately 1.1 billion tons of CO2 per year, and approximately 20% of the rainforest is actively emitting carbon.  The Amazon is currently 18% deforested, and research has indicated at 25% deforestation, it may reach a tipping point where the rainforest no longer becomes a carbon sink -- and starts becoming a savannah.  More than half of Amazon's deforestation is comes from the production of beef, soy, wood, and palm oil, which is driven by Brazil's current national policy and president Jair Bolsanaro, and likewise driven by consumption in countries like China, the United States, Indian, Germany, and Spain.  One potential strategy for improvement is eliminating the most destructive production taking place in the Amazon, and replacing it with sustainable logging practices, which can allow the rainforest to continue supporting local livelihoods while remaining an important resource of logging materials for the rest of the world. ",
+          "headline": "Until recently, the Amazon sequestered 2 billion tons of CO2 every year -- almost half the USA's annual carbon footprint.  Due to deforestation, the Amazon now only sequesters 1.1 billion tons of CO2 per year, and ~20% of the rainforest is actively emitting carbon.  </br> </br> Most of the deforestation comes from destructive supply chains (e.g. beef, soy, wood, palm oil) and Brazilian national policy under leader Jair Bolsanaro.  </br></br> By replacing destructive supply chains with sustainable logging practices, we can help the rainforest continue supporting local livelihoods, while remaining an important source of high-quality wood for the rest of the world. ",
           "CO2_impact": "-1,100,000,000",
           "CO2_trend": "red",
           "childId": ["brazil_china_exports","brazil_national_policy","brazil_USA_exports","brazil_italy_exports","brazil_spain_exports", "brazil_colombia_exports", "brazil_germany_exports", "brazil_india_exports"]
@@ -640,7 +640,7 @@ function loadGeojsonSources() {
           "fill-opacity": 0.5,
           "name": "2020 United States Election",
           "id": "usElection2020",
-          "headline": "The 2020 US Election will influence environmental outcomes for the entire world.  Candidate Joe Biden has announced a $2 trillion Climate Infrastructure plan.  Conversely, the current administration has appointed fossil fuel lobbyists to high-level positions, and deliberately rolled back environmental protections.",
+          "headline": "The 2020 US Election will influence environmental outcomes for the entire world. </br></br> The current administration put fossil fuel lobbyists in charge of the EPA, gutted critical environmental protections, and denied the reality of man-made climate change.  </br></br>Conversely, candidate Joe Biden has a $2 trillion Climate Infrastructure plan, putting the US on a path to reach net-zero by 2035.",
           "type": "geopolitical",
           "CO2_impact": "7,000,000,000",
           "CO2_trend": "red",
@@ -653,18 +653,18 @@ function loadGeojsonSources() {
       { // Global Warming
         "type": "Feature",
         "properties": {
-          "stroke": "#555555",
+          "stroke": "#9a5319",
           "strokeWidth": 2,
           "stroke-opacity": 1,
-          "fill": "#555555",
+          "fill": "#9a5319",
           "fill-opacity": 0.5,
           "name": "Global Warming",
           "id": "globalWarming",
-          "headline": "Global Warming is primarily driven by greenhouse gas (GHG) emissions since the Industrial Revolution.  Increasing temperatures affect ecosystems and natural systems around the world, including the ability for our oceans to support marine life, the ability for our forests to support biodiversity, and the ability for weather patterns (such as ocean currents and seasonal trends) to keep natural systems in balance.  As natural systems lose their ability to support marine life and forest life, they also lose the ability to support human life.  And as these ecosystems degrade, they start realising more GHG emissions than they sequester, which will acceleratethe loop of atmospheric warming, environmental degradation, and risks for all life on Earth. ",
+          "headline": "Increasing global temperatures make it more difficult for oceans to support marine life, for forests to support biodiversity, and for weather patterns (such as ocean currents and seasonal trends) to keep natural systems in balance.  </br></br> As natural systems lose their ability to support marine life and forest life, they also lose the ability to support human life. </br></br>  As these ecosystems degrade, they start releasing more GHG emissions than they sequester, accelerating the loop of atmospheric warming, environmental degradation, and risks for all life on Earth.",
           "type": "natural",
           "CO2_impact": "-1,100,000,000",
           "CO2_trend": "red",
-          "center": [ -39.679120, 77.603939 ],
+          "center": [-26.71875, 71.07405646336098 ],
           "bbox": [[-176.907481, -11], [180, 90]],
           "childId": ["usa_emissions", "china_emissions", "indonesia_emissions", "india_emissions", "russia_emissions"]
         },
@@ -673,76 +673,24 @@ function loadGeojsonSources() {
           coordinates: [
             [
               [
-                -159.2578125,
-                77.61770905279676
+                160,
+                59.17592824927136
               ],
               [
-                -132.890625,
-                75.58493740869223
+                170,
+                76.67978490310692
               ],
               [
-                -105.8203125,
-                74.77584300649235
+                -170,
+                76.67978490310692
               ],
               [
-                -62.57812500000001,
-                74.68325030051861
+                -160,
+                59.17592824927136
               ],
               [
-                -20.7421875,
-                74.21198251594369
-              ],
-              [
-                15.1171875,
-                74.68325030051861
-              ],
-              [
-                52.734375,
-                74.95939165894974
-              ],
-              [
-                92.10937499999999,
-                76.10079606754579
-              ],
-              [
-                102.65625,
-                77.38950400539731
-              ],
-              [
-                64.3359375,
-                80.92842569282253
-              ],
-              [
-                23.203125,
-                81.72318761821155
-              ],
-              [
-                -23.203125,
-                82.07002819448267
-              ],
-              [
-                -56.953125,
-                82.26169873683153
-              ],
-              [
-                -106.171875,
-                82.1664460084773
-              ],
-              [
-                -134.6484375,
-                81.46626086056541
-              ],
-              [
-                -161.015625,
-                80.05804956215623
-              ],
-              [
-                -175.078125,
-                78.63000556774836
-              ],
-              [
-                -159.2578125,
-                77.61770905279676
+                160,
+                59.17592824927136
               ]
             ]
           ]
@@ -758,7 +706,7 @@ function loadGeojsonSources() {
           "fill-opacity": 0.5,
           "name": "Adani Carmichael Coal Mine",
           "id": "adaniCoalMine",
-          "headline": "The Adani Group is currently pursuing development of an international coal mine, planned to sit between the Galilee Basin and the Great Barrier Reef.  If built, this project will destroy the ancestral lands of Indigenous people, threaten 270 billion liters of Queensland groundwater, add 4.6 billion tons of CO2 to the atmosphere over the next 60 years, and pave the way for at least 8 more coal mines in the Galille Basin.  Many insurers, contractors, and project partners have stepped away from the project because of these problems -- but several corporate entities are still involved in the project, includin Marsh (insurer), Hanwha, and the Industrial Bank of Korea. www.stopadani.com is leading an effort to call on all partners and facilitators to reject this project, and other fossil fuel projects in the future.",
+          "headline": "The Adani Group is currently pursuing development of an international coal mine, planned to sit between the Galilee Basin and the Great Barrier Reef.  </br> </br> If realized, this project will destroy the ancestral lands of Indigenous people, threaten 270 billion liters of Queensland groundwater, add 4.6 billion tons of CO2 to the atmosphere over the next 60 years, and pave the way for at least 8 more coal mines in the Galille Basin.</br></br>Many insurers, contractors, and project partners have stepped away from the project because of these problems -- but several corporate entities are still involved in the project.</br></br>www.stopadani.com is leading an effort to call on all partners and facilitators to reject this project, and other fossil fuel projects in the future.",
           "type": "fossilFuelProject",
           "CO2_impact": "-1,100,000,000",
           "CO2_trend": "red",
@@ -801,7 +749,7 @@ function loadGeojsonSources() {
           "name": "Ocean Pollution",
           "id": "oceanPollution",
           "type": "plastic",
-          "headline": "Around the world, ocean pollution has collected in large patches in the every major ocean.  Most famous is the Great Pacfic Garbage Patch actually exists in two locations -- one patch off the coast of California, and another patch off the coast of Japan.  The majority of global plastic waste is exported to facilities in Southeast Asia.  However, these facilities are not equipped to deal with the volume of plastic they recieve.  As a result, about 2/3rds of ocean plastic comes from overburned rivers in Asia.  Other major sources include the Nile and Niger rivers in Africa, and the Amazon river in South America.",
+          "headline": "Ocean pollution has collected in large patches in the every major ocean.</br></br>Most famous is the Great Pacfic Garbage Patch, which actually exists in two clumps -- one patch near California, and another patch near Japan.</br></br>The majority of global plastic waste is exported from the West to nations in Southeast Asia.  However, these nations are not equipped to deal with the volume of plastic they recieve.  As a result, about 2/3rds of ocean plastic comes from overburned rivers in Asia, and other sources include Africa and South America.",
           "CO2_impact": "0",
           "CO2_trend": "red",
           "center": [ -175.478, 40.294268 ],
