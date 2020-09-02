@@ -115,6 +115,11 @@ details.firstOrder {
   margin-left: 18px;
 }
 
+.intro:hover {
+  cursor: pointer;
+  background: #ffffff82 !important;
+}
+
 summary:hover {
   cursor: pointer;
   background: #646464;
