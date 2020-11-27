@@ -17,6 +17,7 @@ The current version [https://seeing.earth](https://seeing.earth) is a visual pro
 The intended outcome of the MCJ Make-A-Thon is to have a scalable and compatible data schema, which can incorporate sources such as —
 
 - [WorldMRIO Data](https://https://worldmrio.com/)
+- [Electricity Map](https://www.electricitymap.org/ranking)
 - [Ocean Plastic Data](https://theoceancleanup.com/sources/)
 - Crowdsourced datasets
 
