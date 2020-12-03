@@ -28,14 +28,6 @@ The intended outcome of the MCJ Make-A-Thon is to have a scalable and compatible
 
 ### Potential Roadmap (to inform current architecture/design decisions)
 
-**Modeling Across Time**
-
-When exploring any environmental lever / cause, users should be able to understand how this phenomena will change across time based on current trends/data.
-
-As a practical example, this could be a time-series component.
-
-By adjusting the time-series (e.g. dragging a slider), the current data/trends are extrapolated to the new point in time — so a person can see the situation today,a dn move ahead to see how it will look in 2025, and 2030, etc.
-
 **Modeling Across Possibilities**
 
 When exploring any environmental lever / cause, users should be able to experiment with potential interventions, and see how a given intervention would affect the lever / cause.
