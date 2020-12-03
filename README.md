@@ -12,26 +12,31 @@ The intention behind **Seeing Earth** is to help people intuitively understand t
 
 ### Context
 
-The current version [https://seeing.earth](https://seeing.earth) is a visual proof of concept, based on a patchwork of datasets and fuzzy/subjective data wrangling to vizualize them.
+The [current site](https://seeing.earth) is a visual proof of concept.
 
-The intended outcome of the MCJ Make-A-Thon is to have a scalable and compatible data schema, which can incorporate sources such as —
+The useful takeaway is how it models/representats the environmental crisis — as a series of nested causal relationships, rendered in a (hopefully) intuitive way.
+
+Exploring a high-level cause of the environmental crisis, such as Amazon deforestation, reveals its component causes — including national policy and international supply chains.  Exploring the international supply chains, such as China's beef imports or the US's unsustainable logging imports, reveals the specific cities where those products are headed.  This gives a view of the high-level cause at different levels, and enables us to consider interventions at different levels.
+
+Is the causality distributed across many points?  Is it concentrated in a few areas (Pareto distribution)?
+
+Is political action viable at the national level?  If not, can there be educational / public-facing interventions that appeal to the country at large?  Any other viable national interventions?  Or is causality concentrated in a small enough group of cities, that we can have the highest leverage working at the city level?
+
+These are the types of questions and decisions that Seeing Earth should help guide.  It's not about helping people answer "what can I do?"  It's about helping people all of us recognize what is most needed, compare different opportunities for impact, and hopefully make the best decisions we can.
+
+Much of this information is data-driven, and that data lives in a variety of places with a variety of standards, units, and ontologies.
+
+To make Seeing Earth an intuitive tool, it will require pulling together these disparate data sources and being able to view the data they provide in a cohesive world view.  Ex: Supply chains are a cause of deforestation, and national policies are too.  How can we model those two types of data in the same view?
+
+To that end, the intention of the MCJ Make-A-Thon is to develop a scalable and cross-dimensional foundation for this tool — perhaps in the form of a data schema – which can incorporate data sources such as -- 
 
 - [WorldMRIO Data](https://https://worldmrio.com/)
 - [Electricity Map](https://www.electricitymap.org/ranking)
 - [Ocean Plastic Data](https://theoceancleanup.com/sources/)
+- Political trends
+- Cultural trends
 - Crowdsourced datasets
 
-— to serve as a long-term foundation for the project.  This foundational data schema will enable us to continue adding data over time, getting a more complete picture of the largest environmental levers and causalities, and informing our actions.
+-- and intermingle those data sources in a useful, informative worldview.
 
-*(The [WorldMRIO Data](https://https://worldmrio.com/) may be the best option for a base dataset.)*
-
-
-### Potential Roadmap (to inform current architecture/design decisions)
-
-**Modeling Across Possibilities**
-
-When exploring any environmental lever / cause, users should be able to experiment with potential interventions, and see how a given intervention would affect the lever / cause.
-
-As a practical example, a user could model a California import boycott on Amazonian beef products (the "intervention" could be modeled by adjusting the  data in accordance with the proposed action -- in this case, lowering the metric of Amazonian beef supplied + consumed in CA), and see what kind of difference the intervention would be expected to make.
-
-If this was implemented by just adjusting the model data in the user's current session, then interventions could also be modeled across time -- the time series extrapolations would just be calculated based on the adjusted data.
+This foundation should enable us to inform our actions with the data available today, and enable us to continue adding data over time, getting a more refined and expansive view of the causes of our environmental crisis.
