@@ -22,7 +22,7 @@ Is the causality distributed across many points?  Is it concentrated in a few ar
 
 Is political action viable at the national level?  If not, can there be educational / public-facing interventions that appeal to the country at large?  Any other viable national interventions?  Or is causality concentrated in a small enough group of cities, that we can have the highest leverage working at the city level?
 
-These are the types of questions and decisions that Seeing Earth should help guide.  It's not about helping people answer "what can I do?"  It's about helping people all of us recognize what is most needed, compare different opportunities for impact, and hopefully make the best decisions we can.
+These are the types of questions and decisions that Seeing Earth should help guide.  It's not about helping people answer "what can I do?"  It's about helping all of us recognize the most urgent problems, compare different opportunities for impact, and hopefully make the best decisions we can.
 
 Much of this information is data-driven, and that data lives in a variety of places with a variety of standards, units, and ontologies.
 
