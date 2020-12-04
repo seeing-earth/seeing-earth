@@ -1,4 +1,4 @@
-### :earth_americas: [Seeing Earth](https://seeing.earth)
+### :earth_americas: [Seeing Earth](https://seeing.earth) (Join us on [Discord](https://discord.gg/zkAxGAvk))
 
 **Problem:** We don't have an accurate worldview of the fundamental drivers + causes of the environmental crisis.  As a result, our actions and discussions rarely get to the level of root causes and meaningful solutions.
 
